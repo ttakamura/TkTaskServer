@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Dropbox
   class RecordResource < Resource
     index_api url: '/1/datastores/get_snapshot', params: ->{ {handle: parent.handle} },
@@ -5,14 +6,27 @@ class Dropbox
     attribute :tid,   String
     attribute :rowid, String
     attribute :data,  Hash
-    #    {
-    #        "tid": "tasks",
-    #        "data": {
-    #            "taskname": "do laundry",
-    #            "completed": false
-    #        },
-    #        "rowid": "myrecord"
-    #    }
+
+    def method_missing key, *args
+      parse_field data[key.to_s]
+    end
+
+    private
+    def parse_field value
+      return value unless value.is_a?(Hash)
+
+      type, str_value = value.to_a.first
+      case type
+      when 'I'
+        str_value.to_i
+      when 'T'
+        Time.at(str_value.to_i/1000.0)
+      when 'B'
+        str_value # base64 encoded
+      else
+        nil
+      end
+    end
   end
 
   class DataStoreResource < Resource
