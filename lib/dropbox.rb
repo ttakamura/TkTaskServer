@@ -22,5 +22,6 @@ class Dropbox
 end
 
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/connection.rb'
-require File.expand_path(File.dirname(__FILE__)) + '/dropbox/resource.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/api.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/dropbox/resource.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/dropbox/data_store.rb'

@@ -1,21 +1,30 @@
 class Dropbox
   class Resource
-    include Virtus.model
-
     class << self
-      def index_api options
-        @index_api = options
-      end
-
-      def fetch_all
-        resources = @index_api[:parser].call Dropbox.connection.get(@index_api[:url])
-        resources = resources.map{|x| self.new x } if resources.first.is_a?(Hash)
-        resources
-      end
+      include Dropbox::ApiMapper::Client
 
       def attribute key, type
         super(key, type)
       end
+
+      def has_many key, klass
+        define_method(key) do
+          has_many_resources[key] ||= begin
+            parent = self
+            Class.new(klass) do
+              define_singleton_method(:parent) do
+                parent
+              end
+            end
+          end
+        end
+      end
+    end
+
+    include Virtus.model
+
+    def has_many_resources
+      @has_many_resources ||= {}
     end
   end
 end
