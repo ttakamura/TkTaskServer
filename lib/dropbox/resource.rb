@@ -1,8 +1,6 @@
 class Dropbox
   class Resource
     class << self
-      include Dropbox::ApiMapper::Client
-
       def attribute key, type
         super(key, type)
       end
@@ -21,7 +19,7 @@ class Dropbox
       end
     end
 
-    include Virtus.model
+    include Virtus.model(strict: true)
 
     def has_many_resources
       @has_many_resources ||= {}

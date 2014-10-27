@@ -16,7 +16,7 @@ class Dropbox
     end
 
     def data_stores
-      DataStoreResource.fetch_all
+      DataStore.fetch_all
     end
   end
 end
