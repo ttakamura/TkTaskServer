@@ -7,10 +7,21 @@ class Dropbox
         end
       end
 
+      def create_api options
+        define_singleton_method(:create_api_mapper) do
+          ApiMapper.new(self, options)
+        end
+      end
+
       def fetch_all
         index_api_mapper.fetch_all
       end
+
+      def create value
+        create_api_mapper.create value
+      end
     end
+
     attr_reader :options
 
     def initialize model, options={}
@@ -25,6 +36,10 @@ class Dropbox
       resources
     end
 
+    def create value
+      Dropbox.connection.post(url, params(value))
+    end
+
     def parse response
       options[:parser].call response
     end
@@ -33,12 +48,16 @@ class Dropbox
       options[:url]
     end
 
-    def params
+    def params value=nil
       case options[:params]
       when Hash
         options[:params]
       when Proc
-        @model.instance_exec(&options[:params])
+        if value
+          @model.instance_exec(value, &options[:params])
+        else
+          @model.instance_exec(&options[:params])
+        end
       else
         nil
       end

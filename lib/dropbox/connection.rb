@@ -9,6 +9,18 @@ class Dropbox
       connection.get(*args)
     end
 
+    def post *args
+      connection.post(*args)
+    end
+
+    def put *args
+      connection.put(*args)
+    end
+
+    def delete *args
+      connection.delete(*args)
+    end
+
     def connection
       @connection ||= new_connection
     end
@@ -36,7 +48,6 @@ class Dropbox
       conn   = new_connection(api_key_auth: true)
       params = {code: auth_code, grant_type: 'authorization_code'}
       res    = conn.post('/1/oauth2/token', params)
-      p res.body
       res.body['access_token']
     end
   end
