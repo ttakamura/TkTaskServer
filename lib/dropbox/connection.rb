@@ -6,19 +6,24 @@ class Dropbox
     end
 
     def get *args
-      connection.get(*args)
+      check_error connection.get(*args)
     end
 
     def post *args
-      connection.post(*args)
+      check_error connection.post(*args)
     end
 
     def put *args
-      connection.put(*args)
+      check_error connection.put(*args)
     end
 
     def delete *args
-      connection.delete(*args)
+      check_error connection.delete(*args)
+    end
+
+    def check_error res
+      raise "FatalError: #{res.status} - #{res.body}" if res.status.to_i >= 400
+      res
     end
 
     def connection

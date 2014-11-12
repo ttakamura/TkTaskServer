@@ -1,65 +1,39 @@
 class Dropbox
-  class ApiMapper
-    module Client
-      def index_api options
-        define_singleton_method(:index_api_mapper) do
-          ApiMapper.new(self, options)
+  class Api
+    Base = '/1/datastores'
+
+    class << self
+      def connection
+        Dropbox.connection
+      end
+
+      def list_datastores
+        res = connection.get("#{Base}/list_datastores")
+        ds  = res.body['datastores'].map do |v|
+          Dropbox::DataStore.new v
         end
+        {datastores: ds}
       end
 
-      def create_api options
-        define_singleton_method(:create_api_mapper) do
-          ApiMapper.new(self, options)
+      def get_snapshot handle
+        res  = connection.get("#{Base}/get_snapshot", handle: handle)
+        rows = res.body['rows'].map do |v|
+          Dropbox::Record.new v
         end
+        {rev: res.body['rev'].to_i, rows: rows}
       end
 
-      def fetch_all
-        index_api_mapper.fetch_all
-      end
-
-      def create value
-        create_api_mapper.create value
-      end
-    end
-
-    attr_reader :options
-
-    def initialize model, options={}
-      @model   = model
-      @options = options
-    end
-
-    def fetch_all
-      response  = Dropbox.connection.get(url, params)
-      resources = parse response
-      resources = resources.map{|x| @model.new x } if resources.first.is_a?(Hash)
-      resources
-    end
-
-    def create value
-      Dropbox.connection.post(url, params(value))
-    end
-
-    def parse response
-      options[:parser].call response
-    end
-
-    def url
-      options[:url]
-    end
-
-    def params value=nil
-      case options[:params]
-      when Hash
-        options[:params]
-      when Proc
-        if value
-          @model.instance_exec(value, &options[:params])
-        else
-          @model.instance_exec(&options[:params])
+      def get_deltas handle, rev
+        res = connection.get("#{Base}/get_deltas", handle: handle, rev: rev)
+        dts = res.body['deltas'].map do |v|
+          Dropbox::Delta.new v
         end
-      else
-        nil
+        {deltas: dts}
+      end
+
+      def put_delta handle, delta
+        res = connection.post("#{Base}/put_delta", handle: handle, rev: delta.rev, changes: delta.serialize_changes)
+        {rev: res.body['rev'].to_i}
       end
     end
   end

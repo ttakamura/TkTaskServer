@@ -2,14 +2,20 @@
 class Dropbox
   class Record < Resource
     include Dropbox::FieldSerializer
-
-    extend Dropbox::ApiMapper::Client
-    index_api url: '/1/datastores/get_snapshot', params: ->{ {handle: parent.handle} },
-                                                 parser: ->(res){ res.body['rows']   }
-
     attribute :tid,   String
-    attribute :rowid, String
+    attribute :rowid, String,      required: false
     attribute :data,  RecordFields
+
+    def self.all
+      Dropbox::Api.get_snapshot(data_store.handle)[:rows]
+    end
+
+    def create!
+      self.rowid ||= Digest::SHA1.hexdigest(rand.to_s)  # Use UUID?
+      change = Dropbox::RecordChanges::Create.new(record: self)
+      delta  = self.class.data_store.deltas.new changes: [change]
+      delta.save!
+    end
 
     def method_missing key, *args
       data[key]
@@ -24,22 +30,18 @@ class Dropbox
     end
   end
 
-  class RecordOperation < Resource
-    attribute :tid,   String
-    attribute :rowid, String
-    attribute :data,  RecordFieldOperations
-  end
-
   class Delta < Resource
-    extend Dropbox::ApiMapper::Client
-    index_api url: '/1/datastores/get_deltas', params: ->{ {handle: parent.handle, rev: 0} },
-                                               parser: ->(res){ res.body['deltas']         }
-
-    create_api url: '/1/datastores/put_delta', params: ->(delta){ {handle: parent.handle, rev: delta.rev, changes: delta.serialize_changes} }
-
-    attribute :rev,     Integer
+    attribute :rev,     Integer,     default: ->(delta, attr){ delta.class.data_store.rev }
     attribute :changes, RecordChanges
-    attribute :nonce,   String, default: '' # base64 encoded
+    attribute :nonce,   String,      required: false         # base64 encoded
+
+    def self.all
+      Dropbox::Api.get_deltas(data_store.handle, 0)[:deltas]
+    end
+
+    def save!
+      self.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
+    end
 
     def serialize_changes
       changes.map do |change|
@@ -49,13 +51,32 @@ class Dropbox
   end
 
   class DataStore < Resource
-    extend Dropbox::ApiMapper::Client
-    index_api url: '/1/datastores/list_datastores', parser: ->(res){ res.body['datastores'] }
-
     attribute :dsid,    String
     attribute :handle,  String
     attribute :rev,     Integer
-    has_many  :records, Record
-    has_many  :deltas,  Delta
+
+    def self.all
+      Dropbox::Api.list_datastores[:datastores]
+    end
+
+    def records
+      data_store = self
+      @records ||= Class.new(Record) do
+        define_singleton_method(:data_store) { data_store }
+      end
+    end
+
+    def deltas
+      data_store = self
+      @deltas ||= Class.new(Delta) do
+        define_singleton_method(:data_store) { data_store }
+      end
+    end
+  end
+
+  class RecordOperation < Resource
+    attribute :tid,   String
+    attribute :rowid, String
+    attribute :data,  RecordFieldOperations
   end
 end
