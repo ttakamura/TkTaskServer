@@ -10,15 +10,25 @@ class Dropbox
       Dropbox::Api.get_snapshot(data_store.handle)[:rows]
     end
 
-    def create!
-      self.rowid ||= Digest::SHA1.hexdigest(rand.to_s)  # Use UUID?
-      change = Dropbox::RecordChanges::Create.new(record: self)
-      delta  = self.class.data_store.deltas.new changes: [change]
+    # TODO: Check new-record? or not
+    # TODO: Use UUID?
+    def save!
+      change = unless self.rowid
+                 self.rowid = Digest::SHA1.hexdigest(rand.to_s)
+                 Dropbox::RecordChanges::Create.new(record: self)
+               else
+                 Dropbox::RecordChanges::Update.new(record: self)
+               end
+      delta = self.class.data_store.deltas.new changes: [change]
       delta.save!
     end
 
     def method_missing key, *args
-      data[key]
+      if v = data[key]
+        v
+      else
+        super
+      end
     end
 
     def serialize_data

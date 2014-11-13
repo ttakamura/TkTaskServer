@@ -102,7 +102,7 @@ class Dropbox
       attribute :record, RecordOperation
 
       def serialize
-        raise 'hoge'
+        raise 'not implemented'
       end
     end
 
@@ -110,7 +110,7 @@ class Dropbox
       attribute :record
 
       def serialize
-        raise 'hoge'
+        raise 'not implemented'
       end
     end
 

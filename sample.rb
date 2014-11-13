@@ -11,6 +11,6 @@ store.deltas.all.each do |delta|
 end
 
 record = store.records.new tid: 'test', data: {name: 'hoge', age: 22, gender: 'male'}
-record.create!
+record.save!
 
 pp record
