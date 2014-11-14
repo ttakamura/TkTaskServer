@@ -27,7 +27,7 @@ class Dropbox
     end
 
     def connection
-      @connection ||= new_connection
+      @connection ||= new_connection(api_logging: (Dropbox::API_LOGGING == 'true'))
     end
 
     def new_connection options={}
@@ -35,7 +35,7 @@ class Dropbox
         conn.request  :url_encoded
         conn.request  :dropbox_api_key_auth, key: APP_KEY, secret: APP_SECRET     if options[:api_key_auth]
         conn.request  :dropbox_bearer_auth,  token: access_token              unless options[:api_key_auth]
-        conn.response :logger
+        conn.response :logger                                                     if options[:api_logging]
         conn.response :json, :content_type => /(json|javascript)/
         conn.adapter  Faraday.default_adapter
       end

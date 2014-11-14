@@ -7,7 +7,7 @@ describe Dropbox::Connection, vcr: {cassette_name: 'dropbox_api', record: VCR_RE
     subject { connection.get '/1/datastores/list_datastores' }
 
     it 'should send a GET request to the Dropbox-API' do
-      should be
+      should be_a Faraday::Response
     end
   end
 end
