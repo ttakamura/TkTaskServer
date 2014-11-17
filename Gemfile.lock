@@ -37,6 +37,7 @@ GEM
       rspec (>= 2.14, < 4.0)
     hitimes (1.2.2)
     ice_nine (0.11.0)
+    json (1.8.1)
     listen (2.7.11)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -99,6 +100,7 @@ DEPENDENCIES
   fuubar
   guard
   guard-rspec
+  json
   pry
   pry-doc
   rr

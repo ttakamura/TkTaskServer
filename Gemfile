@@ -3,6 +3,7 @@ source 'http://tokyo-m.rubygems.org/'
 gem 'faraday'
 gem 'faraday_middleware'
 gem 'virtus'
+gem 'json'
 
 group :development do
   gem 'pry'

@@ -3,6 +3,7 @@ require 'base64'
 require 'faraday'
 require 'faraday_middleware'
 require 'virtus'
+require 'json'
 require 'pp'
 require 'digest'
 
@@ -29,5 +30,6 @@ class Dropbox
   class RecordOperation < Resource; end
 end
 
-require File.expand_path(File.dirname(__FILE__)) + '/dropbox/data_store_field.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/dropbox/record_field.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/data_store.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/dropbox/record.rb'
