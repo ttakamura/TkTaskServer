@@ -1,52 +1,90 @@
 require 'spec_helper'
 
-describe Dropbox::Record, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} do
+describe Dropbox::Record do
   let(:data_store) { Dropbox::DataStore.new handle: 'my_handle', dsid: 'default', rev: 10 }
   let(:record)     { data_store.records.new tid: 'table1', rowid: rowid, data: data }
   let(:rowid)      { '1234' }
   let(:data)       { {name: 'hello', age: 20} }
+  let(:api_request){ {} }
+
+  subject { record }
+
+  its(:name) { should == 'hello' }
+  its(:age)  { should == 20 }
+  its(:tid)  { should == 'table1' }
+
+  describe '#name=' do
+    before { record.name = 'world 99' }
+
+    its(:name) { should == 'world 99' }
+  end
 
   describe '#save!' do
-    subject { record.save! }
+    let(:delta) { api_request[:delta] }
+
+    before do
+      mock(Dropbox::Api).put_delta.with_any_args do |handle, delta|
+        expect(handle).to eq 'my_handle'
+        api_request[:delta] = delta
+        {rev: 11}
+      end
+      @response = record.save!
+    end
+
+    subject { @response }
 
     context 'create' do
       let(:rowid) { nil }
 
-      before do
-        mock(Dropbox::Api).put_delta.with_any_args do |handle, delta|
-          change = delta.changes.first
-          expect(handle).to eq 'my_handle'
-          expect(delta).to be_a Dropbox::Delta
-          expect(change).to be_a Dropbox::RecordChanges::Create
-          expect(change.record.rowid).to be
-          {rev: 11}
+      it { should be }
+
+      describe 'delta' do
+        subject { delta }
+
+        its(:rev) { should == 11 }
+
+        describe 'change' do
+          subject { delta.changes.first }
+
+          it { should be_a Dropbox::RecordChanges::Create }
+          its('record.rowid') { should be }
+          its('record.name')  { should == 'hello' }
         end
       end
-
-      it { should be }
     end
 
     context 'update' do
       let(:rowid) { '11223344' }
 
-      before do
-        mock.proxy(Dropbox::Api).put_delta('my_handle', anything).once do |rev, delta|
-          change = delta.changes.first
-          expect(delta).to be_a Dropbox::Delta
-          expect(change).to be_a Dropbox::RecordChanges::Update
-          expect(change.record.rowid).to eq '11223344'
+      it { should be }
+
+      describe 'delta' do
+        subject { delta }
+
+        its(:rev) { should == 11 }
+
+        describe 'change' do
+          subject { delta.changes.first }
+
+          it { should be_a Dropbox::RecordChanges::Update }
+          its(:record) { should be_a Dropbox::RecordOperation }
+          its('record.rowid') { should == '11223344' }
+
+          describe 'data' do
+            subject { delta.changes.first.record.data[:name] }
+
+            it { should be_a Dropbox::RecordFieldOperations::Put }
+            its(:value) { should == 'hello' }
+          end
         end
       end
-
-      it { should be }
     end
   end
-end
 
-describe Dropbox::Delta, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} do
+  describe '#serialize_data' do
+    subject { record.serialize_data }
 
-end
-
-describe Dropbox::RecordOperation, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} do
-
+    its(['name']) { should == 'hello' }
+    its(['age'])  { should == {'I' => '20'} }
+  end
 end

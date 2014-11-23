@@ -12,19 +12,24 @@ class Dropbox
 
     # TODO: Check new-record? or not
     # TODO: Use UUID?
-    def save!
+    def to_delta
       change = unless self.rowid
                  self.rowid = Digest::SHA1.hexdigest(rand.to_s)
                  Dropbox::RecordChanges::Create.new(record: self)
                else
-                 Dropbox::RecordChanges::Update.new(record: self)
+                 Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
                end
-      delta = self.class.data_store.deltas.new changes: [change]
-      delta.save!
+      self.class.data_store.deltas.new changes: [change]
+    end
+
+    def save!
+      to_delta.save!
     end
 
     def method_missing key, *args
-      if v = data[key]
+      if match = key.to_s.match(/^(.+)=$/)
+        data[match[1].to_sym] = args.first
+      elsif v = data[key]
         v
       else
         super
@@ -40,29 +45,21 @@ class Dropbox
     end
   end
 
-  class Delta < Resource
-    attribute :rev,     Integer,     default: ->(delta, attr){ delta.class.data_store.rev }
-    attribute :changes, RecordChanges
-    attribute :nonce,   String,      required: false         # base64 encoded
-
-    def self.all
-      Dropbox::Api.get_deltas(data_store.handle, 0)[:deltas]
-    end
-
-    def save!
-      self.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
-    end
-
-    def serialize_changes
-      changes.map do |change|
-        change.serialize
-      end.to_json
-    end
-  end
-
   class RecordOperation < Resource
     attribute :tid,   String
     attribute :rowid, String
     attribute :data,  RecordFieldOperations
+
+    def self.from_record record
+      self.new tid: record.tid, rowid: record.rowid, data: RecordFieldOperations.serialize(record)
+    end
+
+    def serialize_data
+      result = {}
+      data.each do |k, v|
+        result[k.to_s] = v.serialize
+      end
+      result
+    end
   end
 end

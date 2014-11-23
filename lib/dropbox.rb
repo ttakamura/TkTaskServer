@@ -33,3 +33,4 @@ end
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/record_field.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/data_store.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/dropbox/record.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/dropbox/delta.rb'

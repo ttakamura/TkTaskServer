@@ -15,7 +15,7 @@ class Dropbox
 
   module FieldParser
     def parse_value value
-      return value.map{|v| parse(v) } if value.is_a?(Array)
+      return value.map{|v| parse_value(v) } if value.is_a?(Array)
 
       return value unless value.is_a?(Hash)
 
@@ -53,10 +53,26 @@ class Dropbox
 
   class RecordFieldOperations < RecordFields
     class Put < Resource
+      include Dropbox::FieldSerializer
       attribute :value, Object
+
+      def serialize
+        ['P', serialize_value(value)]
+      end
     end
 
     class Delete < Resource
+      def serialize
+        ['D']
+      end
+    end
+
+    def self.serialize record
+      operations = {}
+      record.data.map do |k, v|
+        operations[k] = ['P', v]
+      end
+      operations
     end
 
     private
@@ -102,7 +118,7 @@ class Dropbox
       attribute :record, RecordOperation
 
       def serialize
-        raise 'not implemented'
+        ['U', record.tid, record.rowid, record.serialize_data]
       end
     end
 
@@ -110,7 +126,7 @@ class Dropbox
       attribute :record
 
       def serialize
-        raise 'not implemented'
+        ['D', record.tid, record.rowid]
       end
     end
 
