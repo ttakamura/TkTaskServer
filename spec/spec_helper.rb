@@ -32,4 +32,4 @@ unless RECORDING_VCR
   ENV['DROPB_TOKEN'] = 'DUMMY_DROPB_TOKEN'
 end
 
-require File.expand_path("../../lib/dropbox.rb", __FILE__)
+require File.expand_path("../../lib.rb", __FILE__)

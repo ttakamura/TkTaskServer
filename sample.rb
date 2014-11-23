@@ -1,4 +1,4 @@
-require './lib/dropbox.rb'
+require './lib.rb'
 
 store = Dropbox::DataStore.all.first
 pp store

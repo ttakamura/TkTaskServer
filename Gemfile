@@ -4,6 +4,7 @@ gem 'faraday'
 gem 'faraday_middleware'
 gem 'virtus'
 gem 'json'
+gem 'leveldb-ruby'
 
 group :development do
   gem 'pry'
