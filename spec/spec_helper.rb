@@ -2,8 +2,14 @@
 require 'rspec/its'
 require 'vcr'
 require 'webmock'
+require 'tmpdir'
 
-Dir[File.expand_path("./support/**/*.rb", __FILE__)].each {|f| require f}
+ENV['APP_ENV']          = 'test'
+ENV['DROPB_APP_KEY']    = 'DUMMY_DROPB_APP_KEY'
+ENV['DROPB_APP_SECRET'] = 'DUMMY_DROPB_APP_SECRET'
+ENV['DROPB_API_LOG']    = 'false'
+
+Dir[File.expand_path("../support/**/*.rb", __FILE__)].each {|f| require f}
 
 RSpec.configure do |config|
   config.mock_with :rr
@@ -11,11 +17,18 @@ RSpec.configure do |config|
   # config.include Paperclip::Shoulda::Matchers
   # config.include Capybara::DSL, :type => :request
   # config.include Capybara::RSpecMatchers, :type => :request
-end
 
-ENV['DROPB_APP_KEY']    = 'DUMMY_DROPB_APP_KEY'
-ENV['DROPB_APP_SECRET'] = 'DUMMY_DROPB_APP_SECRET'
-ENV['DROPB_API_LOG']    = 'false'
+  config.around do |example|
+    Dir.mktmpdir do |tmp_dir|
+      @db_tmp_dir = tmp_dir
+      example.call
+    end
+  end
+
+  config.before do
+    stub(Setting).db_path { @db_tmp_dir }
+  end
+end
 
 RECORDING_VCR = !!ENV['RECORD_VCR']
 VCR_RECORD = RECORDING_VCR ? :all : :none

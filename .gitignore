@@ -1,3 +1,4 @@
+db/
 .env
 .bundle
 spec/cassettes/

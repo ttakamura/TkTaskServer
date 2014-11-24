@@ -5,6 +5,7 @@ gem 'faraday_middleware'
 gem 'virtus'
 gem 'json'
 gem 'leveldb-ruby'
+gem 'settingslogic'
 
 group :development do
   gem 'pry'

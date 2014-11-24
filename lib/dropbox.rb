@@ -8,10 +8,10 @@ require 'pp'
 require 'digest'
 
 class Dropbox
-  APP_KEY      = ENV['DROPB_APP_KEY']
-  APP_SECRET   = ENV['DROPB_APP_SECRET']
-  ACCESS_TOKEN = ENV['DROPB_TOKEN']
-  API_LOGGING  = ENV['DROPB_API_LOG']
+  APP_KEY      = Setting.dropbox.app_key
+  APP_SECRET   = Setting.dropbox.app_secret
+  ACCESS_TOKEN = Setting.dropbox.access_token
+  API_LOGGING  = Setting.dropbox.api_logging
   END_POINT    = 'https://api.dropbox.com'
 
   class << self

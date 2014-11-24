@@ -1,0 +1,23 @@
+defaults: &defaults
+  db_path: db/dummy
+  dropbox:
+    app_key:      <%= ENV['DROPB_APP_KEY'] %>
+    app_secret:   <%= ENV['DROPB_APP_SECRET'] %>
+    access_token: <%= ENV['DROPB_TOKEN'] %>
+    api_logging:  <%= ENV['DROPB_API_LOG'] %>
+
+development:
+  <<: *defaults
+  db_path: db/level_dev
+
+test:
+  <<: *defaults
+  db_path: db/level_test
+
+staging:
+  <<: *defaults
+  db_path: db/level_staging
+
+production:
+  <<: *defaults
+  db_path: db/level_prod
