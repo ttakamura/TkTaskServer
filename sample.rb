@@ -1,6 +1,6 @@
 require './lib.rb'
 
-store = Dropbox::DataStore.all.first
+store = Dropbox::DataStore.default
 pp store
 
 records = store.records.all

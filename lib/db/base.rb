@@ -29,11 +29,17 @@ class DB::Base
     @db.includes? to_key(key)
   end
 
-  def each options={}
-    Enumerator.new do |y|
+  def each options={}, &block
+    enum = Enumerator.new do |y|
       inner_each(options) do |k, v|
         y << [from_key(k), from_value(v)]
       end
+    end
+
+    if block_given?
+      enum.map(&block)
+    else
+      enum
     end
   end
 

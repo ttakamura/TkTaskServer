@@ -75,8 +75,21 @@ shared_examples_for 'the sub-class of DBs' do
     it { should == [["addr", "Tokyo"], ["age", "21"], ["name", "ABC"]] }
   end
 
+  describe '#each with block' do
+    before do
+      @result = []
+      db.each do |k, v|
+        @result << v
+      end
+    end
+    subject { @result.sort }
+    it      { should == %w(21 ABC Tokyo) }
+  end
+
   describe '#keys' do
-    its(:keys) { should == %w(addr age name) }
+    subject { db.keys.sort }
+
+    it { should == %w(addr age name) }
 
     describe 'raw db' do
       subject { db.db.keys.sort }

@@ -9,6 +9,11 @@ describe Dropbox::DataStore, vcr: {cassette_name: 'dropbox_api', record: VCR_REC
   its(:handle) { should == 'my_handle' }
   its(:rev)    { should == 10 }
 
+  describe '.default' do
+    subject { Dropbox::DataStore.default }
+    its(:dsid) { should == 'default' }
+  end
+
   describe '.all' do
     before      { mock(Dropbox::Api).list_datastores { {datastores: [data_store]} } }
     subject     { Dropbox::DataStore.all }
