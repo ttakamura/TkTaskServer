@@ -23,17 +23,12 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
 
   describe '#fetch_remote_deltas' do
     before do
-      mock(sync).store_delta_if_not_exist(deltas[0])
-      mock(sync).store_delta_if_not_exist(deltas[1])
-      mock(sync).store_delta_if_not_exist(deltas[2])
+      mock(sync.db).put_delta_if_not_exist(1, deltas[0])
+      mock(sync.db).put_delta_if_not_exist(2, deltas[1])
+      mock(sync.db).put_delta_if_not_exist(3, deltas[2])
       sync.fetch_remote_deltas
     end
     subject { sync }
     its(:remote_rev) { should == 3 }
   end
-
-  describe '#store_delta_if_not_exist' do
-
-  end
-
 end

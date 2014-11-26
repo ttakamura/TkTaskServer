@@ -17,11 +17,8 @@ class Dropbox::Sync
   def fetch_remote_deltas
     @dropbox.deltas.all.each do |delta|
       @remote_rev = delta.rev
-      store_delta_if_not_exist delta
+      @db.put_delta_if_not_exist delta.rev, delta
     end
-  end
-
-  def store_delta_if_not_exist delta
   end
 
   def push_local_deltas
