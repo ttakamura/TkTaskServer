@@ -32,7 +32,7 @@ class Dropbox
       end
 
       def put_delta handle, delta
-        res = connection.post("#{Base}/put_delta", handle: handle, rev: delta.rev, changes: delta.to_json)
+        res = connection.post("#{Base}/put_delta", handle: handle, rev: delta.rev, changes: delta.changes_to_json)
         {rev: res.body['rev'].to_i}
       end
     end

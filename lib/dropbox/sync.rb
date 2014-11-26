@@ -3,10 +3,9 @@ class Dropbox::Sync
   attr_reader :dropbox, :db, :remote_rev
 
   def initialize data_store=nil
-    @dropbox      = data_store || Dropbox::DataStore.default
-    @db           = ::DB::Delta.new(::DB::LevelDB.new(path: 'deltas'))
-    @local_deltas = []
-    @remote_rev   = nil
+    @dropbox    = data_store || Dropbox::DataStore.default
+    @db         = ::DB::Delta.new(::DB::LevelDB.new(path: 'deltas'))
+    @remote_rev = nil
   end
 
   def sync!
@@ -23,10 +22,9 @@ class Dropbox::Sync
   end
 
   def store_delta_if_not_exist delta
-
   end
 
   def push_local_deltas
-    # TODO: push all @local_deltas
+    # TODO: push all local changes
   end
 end

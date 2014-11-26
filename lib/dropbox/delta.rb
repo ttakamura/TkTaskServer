@@ -13,10 +13,14 @@ class Dropbox
       self.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
     end
 
-    def to_json
-      changes.map do |change|
-        change.serialize
-      end.to_json
+    def changes_to_json
+      serialize[:changes].to_json
+    end
+
+    def serialize
+      hash = attributes
+      hash[:changes] = changes.map{ |change| change.serialize }
+      hash
     end
   end
 end
