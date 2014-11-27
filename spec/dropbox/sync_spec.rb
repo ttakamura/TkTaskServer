@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD}  do
-  let(:sync)    { Dropbox::Sync.new store }
+  let(:sync)    { Dropbox::DataStore.default.syncs.new }
   let(:store)   { Dropbox::DataStore.new dsid: 'test1', handle: 'my_handle', rev: 1 }
   let(:record1) { store.records.new tid: 'test', rowid: '1', data: {name: 'A'} }
   let(:record2) { store.records.new tid: 'test', rowid: '2', data: {name: 'B'} }
@@ -16,10 +16,12 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
   end
 
   before do
-    mock(sync.dropbox.deltas).all { deltas }
+    mock(sync.data_store.deltas).all.any_times { deltas }
   end
 
   subject { sync }
+
+  its('db.delta_klass') { should == sync.data_store.deltas }
 
   describe '#fetch_remote_deltas' do
     before do

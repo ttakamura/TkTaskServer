@@ -26,5 +26,12 @@ class Dropbox
         define_singleton_method(:data_store) { data_store }
       end
     end
+
+    def syncs
+      data_store = self
+      @syncs ||= Class.new(Sync) do
+        define_singleton_method(:data_store) { data_store }
+      end
+    end
   end
 end

@@ -9,5 +9,9 @@ class Dropbox
     def pack
       serialize.to_json
     end
+
+    def == other
+      self.pack == other.pack
+    end
   end
 end

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 class Dropbox::Sync
-  attr_reader :dropbox, :db, :remote_rev
+  attr_reader :db, :remote_rev
 
-  def initialize data_store=nil
-    @dropbox    = data_store || Dropbox::DataStore.default
-    @db         = ::DB::Delta.new(::DB::LevelDB.new(path: 'deltas'))
+  def initialize
+    @db = DB::Delta.new(DB.open(path: 'deltas'), data_store.deltas)
     @remote_rev = nil
+  end
+
+  def data_store
+    self.class.data_store || Dropbox::DataStore.default
   end
 
   def sync!
@@ -15,7 +18,7 @@ class Dropbox::Sync
 
   # TODO: 差分取得
   def fetch_remote_deltas
-    @dropbox.deltas.all.each do |delta|
+    data_store.deltas.all.each do |delta|
       @remote_rev = delta.rev
       @db.put_delta_if_not_exist delta.rev, delta
     end
