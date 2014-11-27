@@ -3,7 +3,10 @@ class Dropbox::Sync
   attr_reader :db, :remote_rev
 
   def initialize
-    @db = DB::Delta.new(DB.open(path: 'deltas'), data_store.deltas)
+    dsid = data_store.dsid
+    delta_db  = DB.open(path: "#{dsid}_deltas")
+    record_db = DB::Record.new DB.open(path: "#{dsid}_records"), data_store.records
+    @db       = DB::Delta.new delta_db, record_db, data_store.deltas
     @remote_rev = nil
   end
 

@@ -43,6 +43,10 @@ class Dropbox
       end
       result
     end
+
+    def serialize
+      attributes
+    end
   end
 
   class RecordOperation < Resource

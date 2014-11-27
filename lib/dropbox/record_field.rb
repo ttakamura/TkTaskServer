@@ -59,11 +59,19 @@ class Dropbox
       def serialize
         ['P', serialize_value(value)]
       end
+
+      def apply key, old_record
+        old_record[key] = value
+      end
     end
 
     class Delete < Resource
       def serialize
         ['D']
+      end
+
+      def apply key, old_record
+        raise 'not imple'
       end
     end
 
@@ -112,6 +120,10 @@ class Dropbox
       def serialize
         ['I', record.tid, record.rowid, record.serialize_data]
       end
+
+      def apply old_record=nil
+        record
+      end
     end
 
     class Update < Resource
@@ -120,6 +132,13 @@ class Dropbox
       def serialize
         ['U', record.tid, record.rowid, record.serialize_data]
       end
+
+      def apply old_record=nil
+        record.data.each do |key, change|
+          change.apply key, old_record
+        end
+        old_record
+      end
     end
 
     class Delete < Resource
@@ -127,6 +146,9 @@ class Dropbox
 
       def serialize
         ['D', record.tid, record.rowid]
+      end
+
+      def apply old_record=nil
       end
     end
 
