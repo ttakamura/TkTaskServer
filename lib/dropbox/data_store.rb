@@ -33,5 +33,9 @@ class Dropbox
         define_singleton_method(:data_store) { data_store }
       end
     end
+
+    def serialize
+      attributes
+    end
   end
 end
