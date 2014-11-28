@@ -4,7 +4,7 @@ defaults: &defaults
     app_key:      <%= ENV['DROPB_APP_KEY'] %>
     app_secret:   <%= ENV['DROPB_APP_SECRET'] %>
     access_token: <%= ENV['DROPB_TOKEN'] %>
-    api_logging:  <%= ENV['DROPB_API_LOG'] %>
+    api_logging:  <%= !!ENV['DROPB_API_LOG'] %>
 
 development:
   <<: *defaults

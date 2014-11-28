@@ -27,7 +27,7 @@ class Dropbox
     end
 
     def connection
-      @connection ||= new_connection(api_logging: (Dropbox::API_LOGGING == 'true'))
+      @connection ||= new_connection(api_logging: Dropbox::API_LOGGING)
     end
 
     def new_connection options={}
