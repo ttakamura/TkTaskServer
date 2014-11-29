@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class DB::Base
   module Serializer
     def to_key raw_key
@@ -67,6 +68,10 @@ class DB::Base
 
   def values
     @db.values.map{ |v| serializer.from_value(v) }
+  end
+
+  def clear!
+    # TODO: 削除する
   end
 
   private

@@ -134,6 +134,7 @@ class Dropbox
       end
 
       def apply old_record=nil
+        old_record ||= record.to_empty_record
         record.data.each do |key, change|
           change.apply key, old_record
         end

@@ -65,5 +65,9 @@ class Dropbox
       end
       result
     end
+
+    def to_empty_record
+      Dropbox::Record.new(tid: tid, rowid: rowid, data: {})
+    end
   end
 end
