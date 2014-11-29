@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 class Dropbox::Sync
-  attr_reader :db, :remote_rev
+  attr_reader :delta_db, :remote_rev
 
-  def initialize
-    dsid = data_store.dsid
-    delta_db  = DB.open(path: "#{dsid}_deltas")
-    record_db = DB::Record.new DB.open(path: "#{dsid}_records"), data_store.records
-    @db       = DB::Delta.new delta_db, record_db, data_store.deltas
+  def initialize delta_db
+    @delta_db   = delta_db
     @remote_rev = nil
   end
 
@@ -23,7 +20,7 @@ class Dropbox::Sync
   def fetch_remote_deltas
     data_store.deltas.all.each do |delta|
       @remote_rev = delta.rev
-      @db.put_delta_if_not_exist delta.rev, delta
+      delta_db.put_delta_if_not_exist delta.rev, delta
     end
   end
 
