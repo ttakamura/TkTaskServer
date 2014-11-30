@@ -32,6 +32,7 @@ class DB::Delta
 
   attr_reader :record_db, :delta_klass
   def_delegators :@db, :[], :get, :[]=, :put, :delete, :includes?, :keys, :values, :each, :clear!
+  def_delegators :@delta_klass, :bundle
 
   def initialize delta_db, record_db, delta_klass=Dropbox::Delta
     @db            = delta_db

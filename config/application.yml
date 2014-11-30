@@ -1,5 +1,5 @@
 defaults: &defaults
-  db_path: db/dummy
+  db_path: data/dummy
   dropbox:
     app_key:      <%= ENV['DROPB_APP_KEY'] %>
     app_secret:   <%= ENV['DROPB_APP_SECRET'] %>
@@ -8,16 +8,16 @@ defaults: &defaults
 
 development:
   <<: *defaults
-  db_path: db/level_dev
+  db_path: data/level_dev
 
 test:
   <<: *defaults
-  db_path: db/level_test
+  db_path: data/level_test
 
 staging:
   <<: *defaults
-  db_path: db/level_staging
+  db_path: data/level_staging
 
 production:
   <<: *defaults
-  db_path: db/level_prod
+  db_path: data/level_prod

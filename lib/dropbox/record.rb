@@ -12,14 +12,17 @@ class Dropbox
 
     # TODO: Check new-record? or not
     # TODO: Use UUID?
+    def to_change
+      unless self.rowid
+        self.rowid = Digest::SHA1.hexdigest(rand.to_s)
+        Dropbox::RecordChanges::Create.new(record: self)
+      else
+        Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
+      end
+    end
+
     def to_delta
-      change = unless self.rowid
-                 self.rowid = Digest::SHA1.hexdigest(rand.to_s)
-                 Dropbox::RecordChanges::Create.new(record: self)
-               else
-                 Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
-               end
-      self.class.data_store.deltas.new changes: [change]
+      self.class.data_store.deltas.new changes: [self.to_change]
     end
 
     def save!

@@ -9,6 +9,10 @@ class Dropbox
       Dropbox::Api.get_deltas(data_store.handle, 0)[:deltas]
     end
 
+    def self.bundle records
+      self.new changes: records.map(&:to_change)
+    end
+
     def save!
       self.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
     end

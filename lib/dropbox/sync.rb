@@ -27,4 +27,8 @@ class Dropbox::Sync
   def push_local_deltas
     # TODO: push all local changes
   end
+
+  def push_local_delta delta
+    delta.save!
+  end
 end

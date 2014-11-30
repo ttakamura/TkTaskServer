@@ -5,6 +5,7 @@ class DB::Record
   attr_reader :record_klass
 
   def_delegators :@db, :[], :get, :[]=, :put, :delete, :includes?, :each, :keys, :values, :clear!
+  def_delegators :@record_klass, :new
 
   def initialize db, record_klass=Dropbox::Record
     @db            = db

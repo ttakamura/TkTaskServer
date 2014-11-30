@@ -25,8 +25,6 @@ describe DB::DataStore do
 
     its([1]) { should == deltas[0] }
     its([2]) { should == deltas[1] }
-
-
   end
 
   describe '#records' do

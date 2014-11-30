@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class DB::DataStore
   attr_reader :deltas, :records
 
@@ -9,5 +10,10 @@ class DB::DataStore
 
   def sync!
     @sync.sync!
+  end
+
+  # TODO: ローカルに貯めてpushする
+  def push_local_delta delta
+    @sync.push_local_delta delta
   end
 end
