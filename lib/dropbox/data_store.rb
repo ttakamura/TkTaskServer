@@ -5,12 +5,18 @@ class Dropbox
     attribute :handle,  String
     attribute :rev,     Integer
 
-    def self.default
-      self.all.find{ |d| d.dsid == 'default' }
-    end
+    class << self
+      def [] name
+        self.all.find{ |d| d.dsid == name.to_s }
+      end
 
-    def self.all
-      Dropbox::Api.list_datastores[:datastores]
+      def default
+        self[:default]
+      end
+
+      def all
+        Dropbox::Api.list_datastores[:datastores]
+      end
     end
 
     def records

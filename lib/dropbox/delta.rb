@@ -5,8 +5,8 @@ class Dropbox
     attribute :changes, RecordChanges
     attribute :nonce,   String,      required: false         # base64 encoded
 
-    def self.all
-      Dropbox::Api.get_deltas(data_store.handle, 0)[:deltas]
+    def self.all rev=0
+      Dropbox::Api.get_deltas(data_store.handle, rev)[:deltas]
     end
 
     def self.bundle records

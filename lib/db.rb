@@ -1,8 +1,10 @@
 require 'leveldb'
 
 class DB
-  def self.open *args
-    ::DB::LevelDB.new(*args)
+  def self.open name=:default, *args
+    remote_db = Dropbox::DataStore[name]
+    local_db  = DB::DataStore.new remote_db, DB::LevelDB.new(path: "#{name}_deltas"), DB::LevelDB.new(path: "#{name}_records")
+    [remote_db, local_db]
   end
 end
 

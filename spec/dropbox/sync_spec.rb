@@ -8,6 +8,7 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
   let(:record1)   { store.records.new tid: 'test', rowid: '1', data: {name: 'A'} }
   let(:record2)   { store.records.new tid: 'test', rowid: '2', data: {name: 'B'} }
   let(:record3)   { store.records.new tid: 'test', rowid: '3', data: {name: 'C'} }
+  let(:begin_rev) { 0 }
 
   let(:deltas) do
     [
@@ -17,20 +18,42 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
     ]
   end
 
-  before do
-    mock(sync.data_store.deltas).all.any_times { deltas }
-  end
-
-  subject { sync }
-
   describe '#fetch_remote_deltas' do
-    before do
-      mock(sync.delta_db).put_delta_if_not_exist(1, deltas[0])
-      mock(sync.delta_db).put_delta_if_not_exist(2, deltas[1])
-      mock(sync.delta_db).put_delta_if_not_exist(3, deltas[2])
-      sync.fetch_remote_deltas
-    end
     subject { sync }
-    its(:remote_rev) { should == 3 }
+
+    context 'current_rev is 0' do
+      before do
+        mock(sync.data_store.deltas).all(0).any_times { deltas }
+
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(1, deltas[0]).once
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(2, deltas[1]).once
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(3, deltas[2]).once
+
+        expect(sync.local_rev).to eq 0
+        sync.fetch_remote_deltas
+      end
+
+      its(:remote_rev) { should == 3 }
+      its(:local_rev)  { should == 3 }
+    end
+
+    context 'current_rev = 2' do
+      before do
+        sync.delta_db.put_delta_if_not_exist 1, deltas[0]
+        sync.delta_db.put_delta_if_not_exist 2, deltas[1]
+
+        mock(sync.data_store.deltas).all(2).any_times { [deltas[2]] }
+
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(1, deltas[0]).never
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(2, deltas[1]).never
+        mock.proxy(sync.delta_db).put_delta_if_not_exist(3, deltas[2]).once
+
+        expect(sync.local_rev).to eq 2
+        sync.fetch_remote_deltas
+      end
+
+      its(:remote_rev) { should == 3 }
+      its(:local_rev)  { should == 3 }
+    end
   end
 end
