@@ -22,7 +22,7 @@ class Dropbox::Sync
 
   # TODO: 差分取得
   def fetch_remote_deltas
-    data_store.deltas.all(local_rev).each do |delta|
+    data_store.deltas.all(local_rev+1).each do |delta|
       @remote_rev = delta.rev
       delta_db.put_delta_if_not_exist delta.rev, delta
     end

@@ -23,7 +23,7 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
 
     context 'current_rev is 0' do
       before do
-        mock(sync.data_store.deltas).all(0).any_times { deltas }
+        mock(sync.data_store.deltas).all(1).any_times { deltas }
 
         mock.proxy(sync.delta_db).put_delta_if_not_exist(1, deltas[0]).once
         mock.proxy(sync.delta_db).put_delta_if_not_exist(2, deltas[1]).once
@@ -42,7 +42,7 @@ describe Dropbox::Sync, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD} 
         sync.delta_db.put_delta_if_not_exist 1, deltas[0]
         sync.delta_db.put_delta_if_not_exist 2, deltas[1]
 
-        mock(sync.data_store.deltas).all(2).any_times { [deltas[2]] }
+        mock(sync.data_store.deltas).all(3).any_times { [deltas[2]] }
 
         mock.proxy(sync.delta_db).put_delta_if_not_exist(1, deltas[0]).never
         mock.proxy(sync.delta_db).put_delta_if_not_exist(2, deltas[1]).never

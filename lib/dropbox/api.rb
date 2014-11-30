@@ -25,7 +25,7 @@ class Dropbox
 
       def get_deltas handle, rev
         res = connection.get("#{Base}/get_deltas", handle: handle, rev: rev)
-        dts = res.body['deltas'].map do |v|
+        dts = (res.body['deltas'] || []).map do |v|
           Dropbox::Delta.new v
         end
         {deltas: dts}
