@@ -7,7 +7,7 @@ require 'tmpdir'
 ENV['APP_ENV']          = 'test'
 ENV['DROPB_APP_KEY']    = 'DUMMY_DROPB_APP_KEY'
 ENV['DROPB_APP_SECRET'] = 'DUMMY_DROPB_APP_SECRET'
-ENV['DROPB_API_LOG']    = 'false'
+ENV['DROPB_API_LOG']    = nil
 
 Dir[File.expand_path("../support/**/*.rb", __FILE__)].each {|f| require f}
 
@@ -45,4 +45,4 @@ unless RECORDING_VCR
   ENV['DROPB_TOKEN'] = 'DUMMY_DROPB_TOKEN'
 end
 
-require File.expand_path("../../lib.rb", __FILE__)
+require File.expand_path("../../app.rb", __FILE__)

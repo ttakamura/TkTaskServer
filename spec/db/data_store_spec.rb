@@ -16,7 +16,7 @@ describe DB::DataStore do
   end
 
   before do
-    mock(remote_ds.deltas).all(0).any_times { deltas }
+    mock(remote_ds.deltas).all(1).any_times { deltas }
     local_ds.sync!
   end
 
