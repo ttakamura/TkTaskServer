@@ -13,6 +13,10 @@ class DB::Record
     @record_klass  = record_klass
   end
 
+  def all
+    to_enum(:each).map{ |key, value| value }
+  end
+
   def to_value raw_value
     super raw_value.pack
   end

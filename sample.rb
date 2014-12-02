@@ -1,16 +1,24 @@
 require './app.rb'
 
-store = Dropbox::DataStore.default
-pp store
+remote, local = DB.open :default
+local.sync!
 
-records = store.records.all
+pp remote
+pp local
+
+records = local.records.all
+
 pp records
 
-store.deltas.all.each do |delta|
+local.deltas.all.each do |delta|
   pp delta
 end
 
-record = store.records.new tid: 'test', data: {name: 'hoge', age: 22, gender: 'male'}
+record = local.records.new tid: 'test', data: {name: 'hoge', age: 22, gender: 'male'}
 record.save!
 
 pp record
+
+# ------------------------------------
+
+ModelBase.db = local

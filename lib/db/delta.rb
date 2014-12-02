@@ -1,38 +1,12 @@
 # -*- coding: utf-8 -*-
 class DB::Delta
-  module Change
-    def watch &observer
-      @observers << observer
-    end
-
-    def notify_change record
-      @observers.each{ |obs| obs.call record }
-    end
-
-    def apply_change delta
-      delta.changes.each do |change|
-        rowid  = change.record.rowid
-        record = change.apply record_db[rowid]
-        record_db[rowid] = record
-        notify_change record
-      end
-    end
-
-    def rebuild!
-      record_db.clear!
-      each do |rev, delta|
-        apply_change delta
-      end
-    end
-  end
-
-  include Change
+  include DB::DeltaChanger
   include DB::Base::Serializer
   extend Forwardable
 
   attr_reader :record_db, :delta_klass
   def_delegators :@db, :[], :get, :[]=, :put, :delete, :includes?, :keys, :values, :each, :clear!
-  def_delegators :@delta_klass, :bundle
+  def_delegators :@delta_klass, :new, :bundle
 
   def initialize delta_db, record_db, delta_klass=Dropbox::Delta
     @db            = delta_db
@@ -40,6 +14,10 @@ class DB::Delta
     @record_db     = record_db
     @delta_klass   = delta_klass
     @observers     = []
+  end
+
+  def all
+    to_enum(:each).map{ |key, value| value }
   end
 
   def current_rev

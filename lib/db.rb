@@ -10,6 +10,7 @@ end
 
 require File.expand_path(File.dirname(__FILE__)) + '/db/base.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/db/leveldb.rb'
+require File.expand_path(File.dirname(__FILE__)) + '/db/delta_changer.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/db/delta.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/db/record.rb'
 require File.expand_path(File.dirname(__FILE__)) + '/db/data_store.rb'

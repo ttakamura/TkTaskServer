@@ -1,4 +1,5 @@
 require 'pathname'
+require 'forwardable'
 
 TK_ROOT_DIR = Pathname.new File.expand_path("..", __FILE__)
 TK_ENV      = ENV['APP_ENV'] || 'development'

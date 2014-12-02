@@ -13,19 +13,10 @@
 # @rowid="BtVtHRU6I0MMCD0UbmCq5A",
 # @tid="tasks1">]
 
-class Task < SimpleDelegator
-  class << self
-    def db
-      @db
-    end
+class Task < DropbModel
+  self.table_id = 'tasks'
 
-    def db= db
-      @db = db
-    end
-  end
-
-  def initialize attributes
-    attributes = db.records    if attributes.is_a? Hash
-    super attributes
-  end
+  attribute :name
+  attribute :elapsed
+  attribute :done
 end
