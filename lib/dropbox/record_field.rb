@@ -43,6 +43,7 @@ class Dropbox
     include FieldParser
 
     def coerce values
+      values ||= {}
       res = {}
       values.each do |k, value|
         res[k.to_sym] = parse_value(value)
@@ -150,6 +151,7 @@ class Dropbox
       end
 
       def apply old_record=nil
+        nil
       end
     end
 

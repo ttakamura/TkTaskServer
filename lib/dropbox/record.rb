@@ -13,11 +13,15 @@ class Dropbox
     # TODO: Check new-record? or not
     # TODO: Use UUID?
     def to_change
-      unless self.rowid
-        self.rowid = Digest::SHA1.hexdigest(rand.to_s)
-        Dropbox::RecordChanges::Create.new(record: self)
+      if @deleted_at
+        Dropbox::RecordChanges::Delete.new(record: self)
       else
-        Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
+        unless self.rowid
+          self.rowid = Digest::SHA1.hexdigest(rand.to_s)
+          Dropbox::RecordChanges::Create.new(record: self)
+        else
+          Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
+        end
       end
     end
 
@@ -27,6 +31,11 @@ class Dropbox
 
     def save!
       to_delta.save!
+    end
+
+    def destroy!
+      @deleted_at = Time.now
+      save!
     end
 
     def method_missing key, *args

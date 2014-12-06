@@ -55,7 +55,12 @@ class DropbModel
   end
 
   def save! options={}
-    super()
-    # db.sync! if options[:autosync]
+    @record.save!
+    db.sync! unless options[:autosync] == false
+  end
+
+  def destroy! options={}
+    @record.destroy!
+    db.sync! unless options[:autosync] == false
   end
 end

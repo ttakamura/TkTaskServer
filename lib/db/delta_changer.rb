@@ -11,8 +11,11 @@ module DB::DeltaChanger
   def apply_change delta
     delta.changes.each do |change|
       rowid  = change.record.rowid
-      record = change.apply record_db[rowid]
-      record_db[rowid] = record
+      if record = change.apply(record_db[rowid])
+        record_db[rowid] = record
+      else
+        record_db.delete rowid
+      end
       notify_change record
     end
   end
