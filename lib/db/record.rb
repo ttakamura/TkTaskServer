@@ -1,11 +1,8 @@
 class DB::Record
   include DB::Base::Serializer
   extend Forwardable
-
   attr_reader :record_klass
-
   def_delegators :@db, :[], :get, :[]=, :put, :delete, :includes?, :each, :keys, :values, :clear!
-  def_delegators :@record_klass, :new
 
   def initialize db, record_klass=Dropbox::Record
     @db            = db
@@ -24,6 +21,10 @@ class DB::Record
   def from_value db_value
     return nil unless db_value
     record_klass.unpack super(db_value)
+  end
+
+  def new *args
+    record_klass.new(*args)
   end
 
   private

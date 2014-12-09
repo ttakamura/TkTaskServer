@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class DropbModel
   class << self
     def find rowid
@@ -10,15 +11,15 @@ class DropbModel
       db.records.all.find_all{ |r| r.tid == table_id }.map{ |r| self.new r }
     end
 
+    def db= db
+      @db = db
+    end
+
     def db
       @db ||= begin
                 remote, local = DB.open :default
                 local
               end
-    end
-
-    def db= db
-      @db = db
     end
 
     def table_id= id
@@ -38,6 +39,10 @@ class DropbModel
         @record.send("#{name}=", value)
       end
     end
+
+    def sync!
+      db.sync!
+    end
   end
 
   extend Forwardable
@@ -50,17 +55,24 @@ class DropbModel
                                  : record
   end
 
-  def db
-    self.class.db
-  end
-
   def save! options={}
-    @record.save!
-    db.sync! unless options[:autosync] == false
+    @record.save!    # TODO: local に貯める
+
+    db.records[@record.rowid] = @record
+
+    db.sync! if options[:sync] == true
   end
 
   def destroy! options={}
-    @record.destroy!
-    db.sync! unless options[:autosync] == false
+    @record.destroy!  # TODO: local に貯める
+
+    db.records.delete @record.rowid
+
+    db.sync! if options[:sync] == true
+  end
+
+  private
+  def db
+    self.class.db
   end
 end
