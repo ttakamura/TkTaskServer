@@ -17,6 +17,11 @@ class Task < DropbModel
   self.table_id = 'tasks'
 
   attribute :name
+  attribute :section
+  attribute :row
+  attribute :estimate
+
   attribute :elapsed
   attribute :done
+  attribute :date
 end
