@@ -3,6 +3,7 @@ class DropbModel
   class << self
     def find rowid
       r = db.records[rowid]
+      return nil unless r
       return nil unless r.tid == table_id
       self.new r
     end
@@ -31,6 +32,12 @@ class DropbModel
     end
 
     def attribute name
+      @attributes ||= {}
+      @attributes[name] = {
+        name: name,
+        index: @attributes.count
+      }
+
       define_method(name) do
         @record.data[name]
       end
@@ -38,6 +45,10 @@ class DropbModel
       define_method("#{name}=") do |value|
         @record.send("#{name}=", value)
       end
+    end
+
+    def each_attribute &block
+      @attributes.sort_by{ |k,v| v[:index] }.each(&block)
     end
 
     def sync!

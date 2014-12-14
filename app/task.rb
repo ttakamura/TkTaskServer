@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-
 class Task < DropbModel
+  include TextMapper
+
   self.table_id = 'tasks'
 
   attribute :name
   attribute :section
   attribute :row
   attribute :estimate
-
   attribute :elapsed
   attribute :done
   attribute :date
