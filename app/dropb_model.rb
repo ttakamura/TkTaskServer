@@ -57,6 +57,7 @@ class DropbModel
   end
 
   extend Forwardable
+  extend TextMapper
   attr_reader :record
 
   def_delegators :@record, :tid, :rowid

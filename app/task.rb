@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 class Task < DropbModel
-  include TextMapper
-
   self.table_id = 'tasks'
 
   attribute :name

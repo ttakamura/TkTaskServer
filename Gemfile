@@ -6,6 +6,7 @@ gem 'virtus'
 gem 'json'
 gem 'leveldb-ruby'
 gem 'settingslogic'
+gem 'hirb-unicode'
 
 group :development do
   gem 'pry'
