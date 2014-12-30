@@ -50,6 +50,8 @@ GEM
     lumberjack (1.0.9)
     method_source (0.8.2)
     multipart-post (2.0.0)
+    org-ruby (0.9.12)
+      rubypants (~> 0.2)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -78,6 +80,7 @@ GEM
     rspec-support (3.1.2)
     ruby-progressbar (1.7.0)
     ruby_gntp (0.3.4)
+    rubypants (0.2.0)
     safe_yaml (1.0.4)
     settingslogic (2.0.9)
     slop (3.6.0)
@@ -110,6 +113,7 @@ DEPENDENCIES
   hirb-unicode
   json
   leveldb-ruby
+  org-ruby
   pry
   pry-doc
   rr

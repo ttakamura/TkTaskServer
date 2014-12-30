@@ -7,6 +7,7 @@ gem 'json'
 gem 'leveldb-ruby'
 gem 'settingslogic'
 gem 'hirb-unicode'
+gem 'org-ruby'
 
 group :development do
   gem 'pry'

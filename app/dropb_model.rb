@@ -63,7 +63,7 @@ class DropbModel
   def_delegators :@record, :tid, :rowid
 
   def initialize record={}
-    @record = record.is_a?(Hash) ? db.records.new(tid: self.class.table_id, data: record)
+    @record = record.is_a?(Hash) ? db.records.new(tid: self.class.table_id, data: record, new_rowid: record[:id])
                                  : record
   end
 
