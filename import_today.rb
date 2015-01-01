@@ -5,7 +5,7 @@ require 'org-ruby'
 def parse_task line, index
   raise "No ID!! Please set ID in properties by org-mobile-push" unless line.property_drawer['ID']
   {
-    :name      => Digest::SHA1.hexdigest( line.headline_text ),
+    :name      => line.headline_text,
     :section   => 2,
     :elapsed   => 0,
     :rec_start => '',
@@ -13,7 +13,7 @@ def parse_task line, index
     :date      => Time.now.to_s,
     :estimate  => 60,
     :row       => index,
-    :my_id     => @namespace + line.property_drawer['ID']
+    :id        => line.property_drawer['ID']
   }
 end
 
@@ -38,33 +38,26 @@ def parse_tasks file_name
 end
 
 def local_db
-  @local_db ||= begin
-                  remote_db, local_db = DB.open :jinseitask
-                  local_db.sync!
-                  local_db
-                end
+  Task.db
 end
 
 def save_task task
-  task = if current_task = Task.find(task[:my_id])
+  task = if current_task = Task.find_by(id: task[:id])
+           puts "Update #{current_task} to #{task}"
            current_task.record.data = task
            current_task
          else
+           puts "Create #{task}"
            Task.new task
          end
-  task.save!
-  local_db.sync!
+  task.save! sync: true
   task
 end
 
 # ------------------------ main -------------------------
 
-Task.db = local_db
-
 file_name = ARGV.shift
 raise "Please input the file_name" unless file_name
-
-@namespace = "20141231_2_"
 
 tasks = parse_tasks(file_name)
 

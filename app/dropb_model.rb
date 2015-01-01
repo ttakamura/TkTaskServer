@@ -8,17 +8,27 @@ class DropbModel
       self.new r
     end
 
-    def all
-      db.records.all.find_all{ |r| r.tid == table_id }.map{ |r| self.new r }
+    def find_by conditions
+      r = all_records.find{ |x| conditions.each.all?{ |k, v| x.data[k] == v } }
+      return nil unless r
+      self.new r
     end
 
-    def db= db
-      @db = db
+    def all
+      all_records.map{ |r| self.new r }
+    end
+
+    def all_records
+      db.records.all.find_all{ |r| r.tid == table_id }
+    end
+
+    def db_name= db_name
+      @db_name = db_name
     end
 
     def db
       @db ||= begin
-                remote, local = DB.open :default
+                remote, local = DB.open(@db_name)
                 local
               end
     end

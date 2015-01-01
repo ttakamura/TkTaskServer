@@ -15,6 +15,16 @@ class Dropbox
         {datastores: ds}
       end
 
+      def delete_datastore handle
+        res = connection.post("#{Base}/delete_datastore", handle: handle)
+        {ok: res.body['ok']}
+      end
+
+      def get_or_create_datastore dsid
+        res = connection.post("#{Base}/get_or_create_datastore", dsid: dsid)
+        {rev: res.body['rev'], handle: res.body['handle'], created: res.body['created']}
+      end
+
       def get_snapshot handle
         res  = connection.get("#{Base}/get_snapshot", handle: handle)
         rows = res.body['rows'].map do |v|
@@ -32,7 +42,9 @@ class Dropbox
       end
 
       def put_delta handle, delta
-        res = connection.post("#{Base}/put_delta", handle: handle, rev: delta.rev, changes: delta.changes_to_json)
+        payload = {handle: handle, rev: delta.rev, changes: delta.changes_to_json}
+        puts "Sending delta... #{delta} - #{payload}"
+        res = connection.post("#{Base}/put_delta", payload)
         {rev: res.body['rev'].to_i}
       end
     end

@@ -43,5 +43,9 @@ class Dropbox
     def serialize
       attributes
     end
+
+    def destroy!
+      Dropbox::Api.delete_datastore handle
+    end
   end
 end

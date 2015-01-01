@@ -14,7 +14,8 @@ class Dropbox
     end
 
     def save!
-      self.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
+      p self.class.data_store
+      self.rev = self.class.data_store.rev = Dropbox::Api.put_delta(self.class.data_store.handle, self)[:rev]
     end
 
     def changes_to_json

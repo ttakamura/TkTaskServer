@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 class Task < DropbModel
   self.table_id = 'tasks'
+  self.db_name  = :jinseitask
 
   attribute :name
   attribute :section
