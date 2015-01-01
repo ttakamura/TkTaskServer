@@ -9,13 +9,17 @@ module TextMapper
   private
   def to_table_header
     self.each_attribute.map do |k, v|
-      v[:name].to_s
-    end
+      if v[:render] != false
+        v[:name].to_s
+      end
+    end.compact
   end
 
   def to_table_row record
     self.each_attribute.map do |k, v|
-      record.send(k)
-    end
+      if v[:render] != false
+        record.send(k)
+      end
+    end.compact
   end
 end

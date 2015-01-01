@@ -31,12 +31,12 @@ class DropbModel
       @table_id
     end
 
-    def attribute name
+    def attribute name, options={}
       @attributes ||= {}
-      @attributes[name] = {
+      @attributes[name] = options.merge({
         name: name,
         index: @attributes.count
-      }
+      })
 
       define_method(name) do
         @record.data[name]
