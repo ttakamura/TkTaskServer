@@ -5,8 +5,6 @@ class Dropbox
     attribute :tid,   String
     attribute :rowid, String,      required: false
     attribute :data,  RecordFields
-    # new_record の予約 rowid
-    attribute :new_rowid, String,  required: false
 
     def self.all
       Dropbox::Api.get_snapshot(data_store.handle)[:rows]
@@ -19,7 +17,7 @@ class Dropbox
         Dropbox::RecordChanges::Delete.new(record: self)
       else
         unless self.rowid
-          self.rowid = new_rowid || Digest::SHA1.hexdigest(rand.to_s)
+          self.rowid = Digest::SHA1.hexdigest(rand.to_s)
           Dropbox::RecordChanges::Create.new(record: self)
         else
           Dropbox::RecordChanges::Update.new(record: RecordOperation.from_record(self))
