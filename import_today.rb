@@ -118,7 +118,7 @@ def save_task task
            puts "Create #{task}"
            Task.new task
          end
-  task.save! sync: true
+  task.save!
   task
 end
 
@@ -129,10 +129,10 @@ raise "Please input the file_name" unless file_name
 
 tasks = parse_tasks(file_name)
 
-tasks.each do |task|
-  save_task(task)
+Task.transaction do
+  tasks.each do |task|
+    save_task(task)
+  end
 end
-
-local_db.sync!
 
 # binding.pry

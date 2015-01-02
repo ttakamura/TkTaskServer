@@ -64,6 +64,11 @@ class DropbModel
     def sync!
       db.sync!
     end
+
+    def transaction &block
+      block.call
+      sync!
+    end
   end
 
   extend Forwardable
@@ -78,11 +83,13 @@ class DropbModel
   end
 
   def save! options={}
-    @record.save!    # TODO: local に貯める
-
+    if options[:sync] == true
+      @record.save!
+      db.sync!
+    else
+      db.push_local_change @record.to_change
+    end
     db.records[@record.rowid] = @record
-
-    db.sync! if options[:sync] == true
   end
 
   def destroy! options={}

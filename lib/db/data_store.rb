@@ -13,8 +13,7 @@ class DB::DataStore
     @sync.sync!
   end
 
-  # TODO: ローカルに貯めてpushする
-  def push_local_delta delta
-    @sync.push_local_delta delta
+  def push_local_change change
+    @sync.reserve_local_change change
   end
 end

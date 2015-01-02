@@ -5,6 +5,7 @@ class Dropbox::Sync
   def initialize delta_db
     @delta_db   = delta_db
     @remote_rev = data_store.rev
+    @local_unsynced_changes = []
   end
 
   def local_rev
@@ -29,10 +30,12 @@ class Dropbox::Sync
   end
 
   def push_local_deltas
-    # TODO: push all local changes
+    delta = data_store.deltas.new changes: @local_unsynced_changes
+    delta.save!
+    @local_unsynced_changes = []
   end
 
-  def push_local_delta delta
-    delta.save!
+  def reserve_local_change change
+    @local_unsynced_changes << change
   end
 end
