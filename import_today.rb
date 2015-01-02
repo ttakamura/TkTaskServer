@@ -56,7 +56,7 @@ def parse_task line, index
       metadata = parse_metadata_line(body_line)
 
       if metadata[:scheduled_date]
-        task[:section]        = metadata[:scheduled_date].hour
+        task[:section]        = (metadata[:scheduled_date].hour / 4).to_i
         task[:scheduled_date] = metadata[:scheduled_date].to_s
       end
 
