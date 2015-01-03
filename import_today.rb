@@ -60,13 +60,13 @@ def parse_task line, index
         task[:scheduled_date] = metadata[:scheduled_date].to_s
       end
 
+      task[:section] = 5 if task[:section] == 0
+
       if metadata[:begin_date] && metadata[:end_date]
         task[:elapsed] += (metadata[:end_date] - metadata[:begin_date]).to_i
       end
     end
   end
-
-  puts "Create/Update task - #{task}"
 
   task
 end
@@ -74,17 +74,10 @@ end
 def parse_tasks file_name
   org   = Orgmode::Parser.new(open(file_name, 'r').read)
   tasks = []
-  begin_tasks = false
 
   org.headlines.each do |headline|
-    if begin_tasks
-      if headline.level == 1
-        begin_tasks = false
-      else
-        tasks << parse_task(headline, tasks.count)
-      end
-    elsif headline.headline_text =~ /^今日のTODO/
-      begin_tasks = true
+    if headline.level == 1
+      tasks << parse_task(headline, tasks.count)
     end
   end
 
