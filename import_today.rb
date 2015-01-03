@@ -58,9 +58,9 @@ def parse_task line, index
       if metadata[:scheduled_date]
         task[:section]        = (metadata[:scheduled_date].hour / 4).to_i
         task[:scheduled_date] = metadata[:scheduled_date].to_s
-      end
 
-      task[:section] = 5 if task[:section] == 0
+        task[:section] = 5 if metadata[:scheduled_date].hour == 0
+      end
 
       if metadata[:begin_date] && metadata[:end_date]
         task[:elapsed] += (metadata[:end_date] - metadata[:begin_date]).to_i
@@ -72,7 +72,7 @@ def parse_task line, index
 end
 
 def parse_tasks file_name
-  org   = Orgmode::Parser.new(open(file_name, 'r').read)
+  org   = Orgmode::Parser.new(open(file_name, 'r:UTF-8').read)
   tasks = []
 
   org.headlines.each do |headline|
