@@ -93,11 +93,14 @@ class DropbModel
   end
 
   def destroy! options={}
-    @record.destroy!  # TODO: local に貯める
-
+    if options[:sync] == true
+      @record.destroy!
+      db.sync!
+    else
+      @record.prepare_destroy
+      db.push_local_change @record.to_change
+    end
     db.records.delete @record.rowid
-
-    db.sync! if options[:sync] == true
   end
 
   private

@@ -33,8 +33,12 @@ class Dropbox
       to_delta.save!
     end
 
-    def destroy!
+    def prepare_destroy
       @deleted_at = Time.now
+    end
+
+    def destroy!
+      prepare_destroy
       save!
     end
 

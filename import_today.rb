@@ -115,10 +115,29 @@ def save_task task
   task
 end
 
+def reset_tasks!
+  Task.transaction do
+    Task.all.each do |t|
+      t.destroy!
+    end
+  end
+end
+
 # ------------------------ main -------------------------
 
-file_name = ARGV.shift
+@opts = Slop.parse(help: true, strict: true) do
+  banner 'Usage: import_today.rb [options]'
+
+  on 'f', 'file=',  'Import org-file'
+  on 'r', 'reset=', 'Reset all tasks before import', default: 'false'
+end
+
+file_name = @opts[:file]
 raise "Please input the file_name" unless file_name
+
+if @opts[:reset] == 'true'
+  reset_tasks!
+end
 
 tasks = parse_tasks(file_name)
 
