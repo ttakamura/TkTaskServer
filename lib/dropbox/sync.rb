@@ -30,6 +30,7 @@ class Dropbox::Sync
   end
 
   def push_local_deltas
+    return if @local_unsynced_changes.empty?
     delta = data_store.deltas.new changes: @local_unsynced_changes
     delta.save!
     @local_unsynced_changes = []

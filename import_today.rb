@@ -72,7 +72,7 @@ def parse_task line, index
 end
 
 def parse_tasks file_name
-  org   = Orgmode::Parser.new(open(file_name, 'r:UTF-8').read)
+  org   = parse_org_file file_name
   tasks = []
 
   org.headlines.each do |headline|
@@ -96,6 +96,10 @@ def parse_tasks file_name
   # raise 'stop'
 
   tasks
+end
+
+def parse_org_file file_name
+  Orgmode::Parser.new(open(file_name, 'r:UTF-8').read)
 end
 
 def local_db
@@ -123,6 +127,58 @@ def reset_tasks!
   end
 end
 
+def import! file_name
+  Task.sync!
+
+  if @opts[:reset] == 'true'
+    reset_tasks!
+  end
+
+  tasks = parse_tasks(file_name)
+
+  Task.transaction do
+    tasks.each do |task|
+      save_task(task)
+    end
+  end
+end
+
+def print_line line
+  case line.paragraph_type
+  when :heading1
+    if task = Task.find_by(id: line.property_drawer['ID'])
+      puts line.to_s.gsub(/(TODO|DONE|WAIT)/, task.done_as_text)
+    else
+      puts line.to_s
+    end
+
+
+
+  when :metadata
+    puts line.to_s
+  else
+    puts line.to_s
+  end
+end
+
+def pull_changes_headline! headline
+  headline.body_lines.each do |l|
+    print_line l
+  end
+end
+
+def export! file_name, output_file_name
+  Task.sync!
+
+  org = parse_org_file file_name
+
+  org.headlines.each do |headline|
+    if headline.level == 1
+      pull_changes_headline! headline
+    end
+  end
+end
+
 # ------------------------ main -------------------------
 
 @opts = Slop.parse(help: true, strict: true) do
@@ -130,21 +186,15 @@ end
 
   on 'f', 'file=',  'Import org-file'
   on 'r', 'reset=', 'Reset all tasks before import', default: 'false'
+  on 'm', 'mode=',  'Export/Import mode',            default: 'import'
 end
 
 file_name = @opts[:file]
 raise "Please input the file_name" unless file_name
 
-if @opts[:reset] == 'true'
-  reset_tasks!
+case @opts[:mode]
+when 'import'
+  import! file_name
+when 'export'
+  export! file_name, (file_name.gsub(".org","")+"_export.org")
 end
-
-tasks = parse_tasks(file_name)
-
-Task.transaction do
-  tasks.each do |task|
-    save_task(task)
-  end
-end
-
-# binding.pry

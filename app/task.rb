@@ -11,6 +11,10 @@ class Task < DropbModel
   attribute :done
   attribute :date
   attribute :rec_start
+
+  def done_as_text
+    done ? 'DONE' : 'TODO'
+  end
 end
 
 #
