@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Dropbox::Api, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD}  do
   let(:api)    { Dropbox::Api }
-  let(:ds)     { api.list_datastores[:datastores].first }
+  let(:ds)     { Dropbox::DataStore[:default] }
   let(:record) { ds.records.new tid: 'default', rowid: rand.to_s, data: {name: 'hello'} }
 
   describe '#list_datastores' do
@@ -25,7 +25,9 @@ describe Dropbox::Api, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD}  
 
   describe '#put_delta' do
     context 'create' do
-      let(:delta) { Dropbox::Delta.new rev: ds.rev, changes: [Dropbox::RecordChanges::Create.new(record: record)] }
+      let(:delta) do
+        Dropbox::Delta.new rev: ds.rev, changes: [Dropbox::RecordChanges::Create.new(record: record)]
+      end
 
       before  { @response = api.put_delta(ds.handle, delta) }
       subject { @response }
@@ -34,6 +36,7 @@ describe Dropbox::Api, vcr: {cassette_name: 'dropbox_api', record: VCR_RECORD}  
 
       context 'update' do
         before do
+          ds.rev += 1
           record.name = 'hello 2'
           delta2 = record.to_delta
           @response = api.put_delta(ds.handle, delta2)

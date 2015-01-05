@@ -28,7 +28,7 @@ class DropbModel
 
     def db
       @db ||= begin
-                remote, local = DB.open(@db_name)
+                remote, local = DB.open(@db_name || :default)
                 local
               end
     end

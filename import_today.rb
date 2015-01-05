@@ -42,7 +42,7 @@ def parse_task line, index
 
   effort_min = if effort = line.property_drawer['Effort']
                  t = Time.parse(effort)
-                 t.hour * 60 + t.minutes
+                 t.hour * 60 + t.min
                else
                  0
                end
