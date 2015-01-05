@@ -2,7 +2,6 @@
 require './app.rb'
 require 'org-ruby'
 
-POMODORO_ICON = "🍅"
 EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
 
 def parse_metadata_line line
@@ -41,6 +40,13 @@ def parse_task line, index
   # => :heading2
   #
 
+  effort_min = if effort = line.property_drawer['Effort']
+                 t = Time.parse(effort)
+                 t.hour * 60 + t.minutes
+               else
+                 0
+               end
+
   task = {
     :name      => line.headline_text,
     :section   => 0,
@@ -48,7 +54,7 @@ def parse_task line, index
     :rec_start => '',
     :done      => line.keyword == 'DONE',
     :date      => Time.now.to_s,
-    :estimate  => line.headline_text.count(POMODORO_ICON) * 30,
+    :estimate  => effort_min,
     :id        => line.property_drawer['ID']
   }
 
