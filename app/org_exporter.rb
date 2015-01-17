@@ -1,5 +1,7 @@
 # coding: utf-8
-class OrgExport
+class OrgExporter
+  EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
+
   def print_line line, headline, task
     case line.paragraph_type
     when :heading1

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 class OrgHeadline
-  EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
-
   extend Forwardable
-  attr_reader :headlines, :id, :tags, :level, :title, :effort_min,
+  attr_reader :headlines, :id, :tags, :level, :title, :effort_min, :state,
               :scheduled_at, :clock_logs, :properties, :body_lines
 
   class << self
@@ -29,7 +27,7 @@ class OrgHeadline
   def initialize top_headline, headlines=[]
     raise "No ID!! Please set ID in properties by org-mobile-push" unless top_headline.property_drawer['ID']
     @self_line    = top_headline
-    @todo         = top_headline.keyword
+    @state        = top_headline.keyword
     @title        = top_headline.headline_text
     @level        = top_headline.level
     @id           = top_headline.property_drawer['ID']
@@ -47,15 +45,31 @@ class OrgHeadline
   end
 
   def to_s
-    "#{'*' * level} #{todo_to_s}#{title}#{tags_to_s}"
+    "#{'*' * level} #{state_to_s}#{title}#{tags_to_s}"
   end
 
-  def todo_to_s
-    @todo ? @todo + ' ' : ''
+  def state_to_s
+    @state ? @state + ' ' : ''
   end
 
   def tags_to_s
     tags.empty? ? '' : "   :#{tags.join(':')}:"
+  end
+
+  def to_task_attrs
+    task = {
+      :name           => title,
+      :section        => (scheduled_at.start_time.hour / 4).to_i,
+      :elapsed        => 0,
+      :rec_start      => '',
+      :done           => state == 'DONE',
+      :date           => Time.now.to_s,
+      :estimate       => effort_min,
+      :id             => id,
+      :scheduled_date => scheduled_at.start_time.iso8601
+    }
+    task[:section] = 5 if  scheduled_at.start_time.hour == 0
+    task
   end
 
   private
