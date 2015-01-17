@@ -2,44 +2,7 @@
 require 'spec_helper'
 
 describe OrgHeadline do
-  let(:content) do
-    <<-EOT
-* やること   :TODO:HOME:
-  SCHEDULED: <2015-01-17 Sat 14:00>
-  :PROPERTIES:
-  :ID:       A001
-  :Effort:   2:20
-  :Hoge:     hello world
-  :END:
-** TODO 散髪
-    SCHEDULED: <2015-01-17 Sat 15:00-16:00>
-    :LOGBOOK:
-    CLOCK: [2015-01-17 Sat 13:31]
-    CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11
-    :END:
-    :PROPERTIES:
-    :ID:       A00101
-    :Effort:   0:20
-    :END:
-    - [ ] あれやって
-    - これやる
-    それする
-** IDEA KPT
-    SCHEDULED: <2015-01-17 Sat 16:00-17:00 +1d>
-    :PROPERTIES:
-    :ID:       A00102
-    :END:
-* 買う物
-  :PROPERTIES:
-  :ID:       A002
-  :END:
-** 牛乳
-    :PROPERTIES:
-    :ID:       A00201
-    :END:
-EOT
-  end
-  let(:top) { OrgHeadline.parse_org content }
+  let(:top) { OrgHeadline.parse_org_file 'spec/fixtures/sample.org' }
 
   subject { top }
 

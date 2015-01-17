@@ -59,16 +59,22 @@ class OrgHeadline
   def to_task_attrs
     task = {
       :name           => title,
-      :section        => (scheduled_at.start_time.hour / 4).to_i,
+      :section        => 0,
       :elapsed        => 0,
       :rec_start      => '',
       :done           => state == 'DONE',
       :date           => Time.now.to_s,
       :estimate       => effort_min,
       :id             => id,
-      :scheduled_date => scheduled_at.start_time.iso8601
+      :scheduled_date => nil
     }
-    task[:section] = 5 if  scheduled_at.start_time.hour == 0
+
+    if scheduled_at && scheduled_at.start_time
+      task[:section]        = (scheduled_at.start_time.hour / 4).to_i
+      task[:section]        = 5 if scheduled_at.start_time.hour == 0
+      task[:scheduled_date] = scheduled_at.start_time.iso8601
+    end
+
     task
   end
 
