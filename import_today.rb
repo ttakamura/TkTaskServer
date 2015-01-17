@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require './app.rb'
-require 'org-ruby'
 
 EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
 
