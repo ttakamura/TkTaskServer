@@ -67,7 +67,7 @@ EOT
       describe 'SCHEDULED: <2015-01-17 Sat 14:00>' do
         subject { top.headlines[0].scheduled_at }
 
-        it { should be_a OrgHeadline::Schedule }
+        it { should be_a OrgSchedule }
         its(:start_time)  { should == Time.parse("2015-01-17T14:00+0900") }
         its(:end_time)    { should be_nil }
         its(:repeat_rule) { should be_nil }
@@ -85,7 +85,7 @@ EOT
         describe 'SCHEDULED: <2015-01-17 Sat 15:00-16:00>' do
           subject { top.headlines[0].headlines[0].scheduled_at }
 
-          it { should be_a OrgHeadline::Schedule }
+          it { should be_a OrgSchedule }
           its(:start_time)  { should == Time.parse("2015-01-17T15:00+0900") }
           its(:end_time)    { should == Time.parse("2015-01-17T16:00+0900") }
           its(:repeat_rule) { should be_nil }
@@ -95,12 +95,12 @@ EOT
           subject { top.headlines[0].headlines[0].clock_logs }
 
           # CLOCK: [2015-01-17 Sat 13:31]
-          its(:first) { should be_a OrgHeadline::ClockLog }
+          its(:first) { should be_a OrgClockLog }
           its('first.start_time') { should == Time.parse('2015-01-17T13:31+0900') }
           its('first.end_time')   { should be_nil }
 
           # CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11
-          its(:last) { should be_a OrgHeadline::ClockLog }
+          its(:last) { should be_a OrgClockLog }
           its('last.start_time') { should == Time.parse('2015-01-17T12:38+0900') }
           its('last.end_time')   { should == Time.parse('2015-01-17T12:49+0900') }
         end
@@ -126,7 +126,7 @@ EOT
         describe 'SCHEDULED: <2015-01-17 Sat 16:00-17:00 +1d>' do
           subject { top.headlines[0].headlines[1].scheduled_at }
 
-          it { should be_a OrgHeadline::Schedule }
+          it { should be_a OrgSchedule }
           its(:start_time)  { should == Time.parse("2015-01-17T16:00+0900") }
           its(:end_time)    { should == Time.parse("2015-01-17T17:00+0900") }
           its(:repeat_rule) { should == '+1d' }
