@@ -81,6 +81,7 @@ EOT
         its(:id)         { should == 'A00101' }
         its(:headlines)  { should == [] }
         its(:effort_min) { should == 20 }
+        its(:state)      { should == 'TODO' }
 
         describe 'SCHEDULED: <2015-01-17 Sat 15:00-16:00>' do
           subject { top.headlines[0].headlines[0].scheduled_at }
@@ -141,5 +142,19 @@ EOT
       its(:to_s)  { should == '* 買う物' }
       its(:id)    { should == 'A002' }
     end
+  end
+
+  describe '#to_task_attrs' do
+    subject { top.headlines[0].to_task_attrs }
+
+    its([:name          ]) { should == 'やること' }
+    its([:section       ]) { should == 3 }
+    its([:elapsed       ]) { should == 0 }
+    its([:rec_start     ]) { should == '' }
+    its([:done          ]) { should == false }
+    its([:date          ]) { should be }
+    its([:estimate      ]) { should == 140 }
+    its([:id            ]) { should == 'A001' }
+    its([:scheduled_date]) { should == '2015-01-17T14:00:00+09:00' }
   end
 end
