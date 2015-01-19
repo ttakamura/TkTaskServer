@@ -21,7 +21,7 @@ class OrgSchedule
 
   def parse_time text
     # <2015-01-17 Sat 14:00-19:40>
-    if m = text.match(/^<(\d{4}-\d{2}-\d{2}) .+? (\d{2}:\d{2})(-(\d{2}:\d{2}))? ?(.+)?>$/)
+    if m = text.match(/^<(\d{4}-\d{2}-\d{2}) .+? ?(\d{2}:\d{2})?(-(\d{2}:\d{2}))? ?(.+)?>$/)
       all, date, start_time, x, end_time, repeat_rule = m.to_a
       {date: date, start_time: start_time, end_time: end_time, repeat: repeat_rule}
     end

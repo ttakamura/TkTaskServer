@@ -81,6 +81,7 @@ class OrgHeadline
   private
   def parse_effort_min effort=nil
     if effort
+      effort = effort == '00:60' ? '01:00' : effort
       t = Time.parse(effort)
       t.hour * 60 + t.min
     else
