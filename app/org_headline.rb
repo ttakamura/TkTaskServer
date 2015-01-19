@@ -63,16 +63,22 @@ class OrgHeadline
       :elapsed        => 0,
       :rec_start      => '',
       :done           => state == 'DONE',
-      :date           => Time.now.to_s,
       :estimate       => effort_min,
       :id             => id,
-      :scheduled_date => nil
+      :scheduled_date => nil,
+      :state          => state || 'NONE'
     }
+
+    task[:clock_logs] = clock_logs.map do |log|
+      if log.start_time && log.end_time
+        [log.start_time, log.end_time]
+      end
+    end.compact.flatten
 
     if scheduled_at && scheduled_at.start_time
       task[:section]        = (scheduled_at.start_time.hour / 4).to_i
       task[:section]        = 5 if scheduled_at.start_time.hour == 0
-      task[:scheduled_date] = scheduled_at.start_time.iso8601
+      task[:scheduled_date] = scheduled_at.start_time
     end
 
     task
