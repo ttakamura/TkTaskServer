@@ -7,6 +7,8 @@ class Dropbox
         {'I' => ruby_value.to_s}
       when Time
         {'T' => (ruby_value.to_i*1000).to_s}
+      when Array
+        ruby_value.map{ |v| serialize_value(v) }
       else
         ruby_value
       end
