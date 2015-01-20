@@ -18,8 +18,30 @@ class OrgExporter
     end
 
     def clock_logs_to_s
+      text = []
+      text << ':LOGBOOK:'
       clock_logs.map do |l|
-        "CLOCK: #{ l.to_s }"
+        text << "CLOCK: #{ l.to_s }"
+      end
+      text << ':END:'
+      text.join("\n")
+    end
+
+    def properties_to_s
+      text = []
+      text << ':PROPERTIES:'
+      properties.each do |key, value|
+        sep_length = (9 - key.length)
+        separator = ' ' * (sep_length < 1 ? 1 : sep_length)
+        text << ":#{key}:#{separator}#{value}"
+      end
+      text << ':END:'
+      text.join("\n")
+    end
+
+    def body_to_s
+      body_lines.map do |line|
+        line.to_s
       end.join("\n")
     end
   end
@@ -30,11 +52,7 @@ class OrgExporter
   end
 
   def print_headline headline
-    task = Task.find_by(id: headline.id)
-
-    p headline
-    p task
-
+    # task = Task.find_by(id: headline.id)
     puts headline.to_s
     puts headline.schedule_to_s
     puts headline.clock_logs_to_s
