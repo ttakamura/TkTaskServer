@@ -5,6 +5,25 @@ def local_db
   Task.db
 end
 
+#
+# ---------------------- IMPORT --------------------------
+#
+def import! file_name
+  Task.sync!
+
+  if @opts[:reset] == 'true'
+    reset_tasks!
+  end
+
+  tasks = OrgConverter.new(file_name).parse_tasks
+
+  Task.transaction do
+    tasks.each do |task|
+      save_task(task)
+    end
+  end
+end
+
 def save_task task
   task = if current_task = Task.find_by(id: task[:id])
            puts "Update #{current_task} to #{task}"
@@ -26,20 +45,23 @@ def reset_tasks!
   end
 end
 
-def import! file_name
+#
+# ----------------------- EXPORT -----------------------
+#
+def export! file_name
   Task.sync!
 
-  if @opts[:reset] == 'true'
-    reset_tasks!
-  end
+  org_root = OrgHeadline.parse_org_file file_name
+  exporter = OrgExporter.new
 
-  tasks = OrgConverter.new(file_name).parse_tasks
-
-  Task.transaction do
-    tasks.each do |task|
-      save_task(task)
-    end
+  org_root.headlines.each do |headline|
+    merged_headline = pull_changes_headline headline
+    exporter.print_headline merged_headline
   end
+end
+
+def pull_changes_headline headline
+  # TODO
 end
 
 # ------------------------ main -------------------------

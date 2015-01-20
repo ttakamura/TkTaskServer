@@ -48,6 +48,10 @@ class OrgHeadline
     "#{'*' * level} #{state_to_s}#{title}#{tags_to_s}"
   end
 
+  def print
+    # nothing to-do
+  end
+
   def state_to_s
     @state ? @state + ' ' : ''
   end
