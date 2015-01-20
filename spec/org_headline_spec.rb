@@ -20,8 +20,15 @@ describe OrgHeadline do
       its(:effort_min) { should == 140 }
       its(:clock_logs) { should == [] }
 
-      its(:to_s)          { should == '* やること   :TODO:HOME:' }
-      its(:schedule_to_s) { should == 'SCHEDULED: <2015-01-17 Sat 14:00>' }
+      its(:to_s)            { should == '* やること   :TODO:HOME:' }
+      its(:schedule_to_s)   { should == 'SCHEDULED: <2015-01-17 Sat 14:00>' }
+      its(:properties_to_s) do
+        should == [':PROPERTIES:',
+                   ':ID:       A001',
+                   ':Effort:   2:20',
+                   ':Hoge:     hello world',
+                   ':END:'].join("\n")
+      end
 
       describe '#properties' do
         subject { top.headlines[0].properties }
