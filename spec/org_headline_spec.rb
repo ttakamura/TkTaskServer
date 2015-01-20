@@ -61,7 +61,7 @@ describe OrgHeadline do
           # CLOCK: [2015-01-17 Sat 13:31]
           its(:first) { should be_a OrgClockLog }
           its('first.start_time') { should == Time.parse('2015-01-17T13:31+0900') }
-          its('first.end_time')   { should be_nil }
+          its('first.end_time')   { should == Time.parse('2015-01-17T13:49+0900') }
 
           # CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11
           its(:last) { should be_a OrgClockLog }
@@ -115,9 +115,8 @@ describe OrgHeadline do
     its([:elapsed       ]) { should == 0 }
     its([:rec_start     ]) { should == '' }
     its([:done          ]) { should == false }
-    its([:date          ]) { should be }
     its([:estimate      ]) { should == 140 }
     its([:id            ]) { should == 'A001' }
-    its([:scheduled_date]) { should == '2015-01-17T14:00:00+09:00' }
+    its([:scheduled_date]) { should == Time.parse('2015-01-17T14:00:00+09:00') }
   end
 end
