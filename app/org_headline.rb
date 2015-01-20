@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class OrgHeadline
+  include ::OrgExporter::SerializeOrgHeadline
+
   extend Forwardable
   attr_reader :headlines, :id, :tags, :level, :title, :effort_min, :state,
               :scheduled_at, :clock_logs, :properties, :body_lines
@@ -42,22 +44,6 @@ class OrgHeadline
 
     # children
     @headlines    = headlines
-  end
-
-  def to_s
-    "#{'*' * level} #{state_to_s}#{title}#{tags_to_s}"
-  end
-
-  def print
-    # nothing to-do
-  end
-
-  def state_to_s
-    @state ? @state + ' ' : ''
-  end
-
-  def tags_to_s
-    tags.empty? ? '' : "   :#{tags.join(':')}:"
   end
 
   def to_task_attrs

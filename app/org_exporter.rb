@@ -1,5 +1,29 @@
 # coding: utf-8
 class OrgExporter
+  module SerializeOrgHeadline
+    def to_s
+      "#{'*' * level} #{state_to_s}#{title}#{tags_to_s}"
+    end
+
+    def state_to_s
+      state ? state + ' ' : ''
+    end
+
+    def tags_to_s
+      tags.empty? ? '' : "   :#{tags.join(':')}:"
+    end
+
+    def schedule_to_s
+      "SCHEDULED: #{ scheduled_at.to_s }"
+    end
+
+    def clock_logs_to_s
+      clock_logs.map do |l|
+        "CLOCK: #{ l.to_s }"
+      end.join("\n")
+    end
+  end
+
   EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
 
   def initialize
@@ -11,11 +35,11 @@ class OrgExporter
     p headline
     p task
 
-
     puts headline.to_s
-    headline.body_lines.each do |line|
-      puts line
-    end
+    puts headline.schedule_to_s
+    puts headline.clock_logs_to_s
+    puts headline.properties_to_s
+    puts headline.body_to_s
   end
 
   # def print_line line, headline, task

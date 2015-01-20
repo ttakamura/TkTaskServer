@@ -15,11 +15,13 @@ describe OrgHeadline do
 
       its(:level)      { should == 1 }
       its(:title)      { should == 'やること' }
-      its(:to_s)       { should == '* やること   :TODO:HOME:' }
       its(:id)         { should == 'A001' }
       its(:tags)       { should == ['TODO', 'HOME'] }
       its(:effort_min) { should == 140 }
       its(:clock_logs) { should == [] }
+
+      its(:to_s)          { should == '* やること   :TODO:HOME:' }
+      its(:schedule_to_s) { should == 'SCHEDULED: <2015-01-17 Sat 14:00>' }
 
       describe '#properties' do
         subject { top.headlines[0].properties }
@@ -40,11 +42,16 @@ describe OrgHeadline do
         subject { top.headlines[0].headlines[0] }
 
         its(:level)      { should == 2 }
-        its(:to_s)       { should == '** TODO 散髪' }
         its(:id)         { should == 'A00101' }
         its(:headlines)  { should == [] }
         its(:effort_min) { should == 20 }
         its(:state)      { should == 'TODO' }
+
+        its(:to_s)            { should == '** TODO 散髪' }
+        its(:clock_logs_to_s) do
+          should == ['CLOCK: [2015-01-17 Sat 13:31]--[2015-01-17 Sat 13:49] =>  0:18',
+                     'CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11'].join("\n")
+        end
 
         describe 'SCHEDULED: <2015-01-17 Sat 15:00-16:00>' do
           subject { top.headlines[0].headlines[0].scheduled_at }
@@ -58,7 +65,7 @@ describe OrgHeadline do
         describe 'clock_logs' do
           subject { top.headlines[0].headlines[0].clock_logs }
 
-          # CLOCK: [2015-01-17 Sat 13:31]
+          # CLOCK: [2015-01-17 Sat 13:31]--[2015-01-17 Sat 13:49] =>  0:18
           its(:first) { should be_a OrgClockLog }
           its('first.start_time') { should == Time.parse('2015-01-17T13:31+0900') }
           its('first.end_time')   { should == Time.parse('2015-01-17T13:49+0900') }
