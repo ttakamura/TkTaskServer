@@ -56,8 +56,10 @@ describe OrgHeadline do
 
         its(:to_s)            { should == '** TODO 散髪' }
         its(:clock_logs_to_s) do
-          should == ['CLOCK: [2015-01-17 Sat 13:31]--[2015-01-17 Sat 13:49] =>  0:18',
-                     'CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11'].join("\n")
+          should == [':LOGBOOK:',
+                     'CLOCK: [2015-01-17 Sat 13:31]--[2015-01-17 Sat 13:49] =>  0:18',
+                     'CLOCK: [2015-01-17 Sat 12:38]--[2015-01-17 Sat 12:49] =>  0:11',
+                     ':END:'].join("\n")
         end
         its(:body_to_s) do
           should == ['    - [ ] あれやって',

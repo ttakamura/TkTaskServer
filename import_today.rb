@@ -61,7 +61,7 @@ def export! file_name
 end
 
 def pull_changes_headline headline
-  # TODO
+  headline
 end
 
 # ------------------------ main -------------------------
