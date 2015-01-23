@@ -11,10 +11,10 @@ class OrgSchedule
   def to_s
     # SCHEDULED: <2015-01-17 Sat 15:00-16:00>
     date   = start_time.strftime("%Y-%m-%d %a")
-    s_time = start_time.strftime("%H:%M")
-    e_time = "-#{ end_time.strftime('%H:%M') }" if end_time
-    repeat = " #{ repeat_rule }"                if repeat_rule
-    "<#{date} #{s_time}#{e_time}#{repeat}>"
+    s_time = " #{ start_time.strftime('%H:%M') }" if start_time.strftime("%H:%M") != '23:59'
+    e_time = "-#{ end_time.strftime('%H:%M') }"   if end_time
+    repeat = " #{ repeat_rule }"                  if repeat_rule
+    "<#{date}#{s_time}#{e_time}#{repeat}>"
   end
 
   private
@@ -23,7 +23,7 @@ class OrgSchedule
     if time[:start_time]
       Time.parse time[:date] + " " + time[:start_time]
     else
-      Time.parse time[:date] + " 23:00"
+      Time.parse time[:date] + " 23:59"
     end
   end
 
