@@ -29,7 +29,7 @@ class OrgHeadline
     # raise "No ID!! Please set ID in properties by org-mobile-push" unless top_headline.property_drawer['ID']
     @self_line    = top_headline
     @state        = top_headline.keyword
-    @title        = top_headline.headline_text
+    @title        = top_headline.headline_text.gsub(/(IDEA|TODO|DONE|NEXT|FOCUS|WAIT|SOMEDAY) /, '')
     @level        = top_headline.level
     @id           = top_headline.property_drawer['ID']
     @tags         = top_headline.tags
