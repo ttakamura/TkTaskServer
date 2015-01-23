@@ -20,7 +20,7 @@ describe OrgHeadline do
       its(:effort_min) { should == 140 }
       its(:clock_logs) { should == [] }
 
-      its(:to_s)            { should == '* やること   :TODO:HOME:' }
+      its(:to_s)            { should =~ /\* やること\s*:TODO:HOME:/ }
       its(:schedule_to_s)   { should == 'SCHEDULED: <2015-01-17 Sat 14:00>' }
       its(:properties_to_s) do
         should == [':PROPERTIES:',

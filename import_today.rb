@@ -19,7 +19,9 @@ def import! file_name
 
   Task.transaction do
     tasks.each do |task|
-      save_task(task)
+      if task[:id]
+        save_task(task)
+      end
     end
   end
 end
@@ -54,14 +56,22 @@ def export! file_name
   org_root = OrgHeadline.parse_org_file file_name
   exporter = OrgExporter.new
 
+  pull_changes_headline org_root
+
   org_root.headlines.each do |headline|
-    merged_headline = pull_changes_headline headline
-    exporter.print_headline merged_headline
+    exporter.print_headline headline
   end
 end
 
 def pull_changes_headline headline
-  headline
+  headline.headlines.each do |sub_head|
+    pull_changes_headline sub_head
+  end
+
+  return headline unless headline.id
+  return headline unless task = Task.find_by(id: headline.id)
+
+  headline.done! if task.done
 end
 
 # ------------------------ main -------------------------

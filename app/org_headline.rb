@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 class OrgHeadline
   include ::OrgExporter::SerializeOrgHeadline
-
   extend Forwardable
   attr_reader :headlines, :id, :tags, :level, :title, :effort_min, :state,
               :scheduled_at, :clock_logs, :properties, :body_lines
@@ -72,6 +71,10 @@ class OrgHeadline
     end
 
     task
+  end
+
+  def done!
+    @state = 'DONE'
   end
 
   private
