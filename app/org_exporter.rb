@@ -10,12 +10,14 @@ class OrgExporter
     end
 
     def tags_to_s
-      text = tags.empty? ? '' : ":#{tags.join(':')}:"
+      return "" if tags.empty?
+      text = ":#{tags.join(':')}:"
       sep  = " " * (65 - title.length)
       sep + text
     end
 
     def schedule_to_s
+      return "" if scheduled_at.nil?
       "SCHEDULED: #{ scheduled_at.to_s }"
     end
 
@@ -31,6 +33,7 @@ class OrgExporter
     end
 
     def properties_to_s
+      return "" if properties.empty?
       text = []
       text << ':PROPERTIES:'
       properties.each do |key, value|
@@ -55,12 +58,15 @@ class OrgExporter
   end
 
   def print_headline headline
-    # task = Task.find_by(id: headline.id)
     print_text headline.to_s,            0
-    print_text headline.schedule_to_s,   headline.level
-    print_text headline.clock_logs_to_s, headline.level
-    print_text headline.properties_to_s, headline.level
+    print_text headline.schedule_to_s,   headline.level + 1
+    print_text headline.clock_logs_to_s, headline.level + 1
+    print_text headline.properties_to_s, headline.level + 1
     print_text headline.body_to_s,       0
+
+    headline.headlines.each do |sub_head|
+      print_headline sub_head
+    end
   end
 
   def print_text text, level
@@ -70,6 +76,6 @@ class OrgExporter
   end
 
   def print_line line, level=1
-    puts "#{ '  ' * level }#{ line }"
+    puts "#{ ' ' * level }#{ line }"
   end
 end

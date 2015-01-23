@@ -27,7 +27,7 @@ class OrgHeadline
   end
 
   def initialize top_headline, headlines=[]
-    raise "No ID!! Please set ID in properties by org-mobile-push" unless top_headline.property_drawer['ID']
+    # raise "No ID!! Please set ID in properties by org-mobile-push" unless top_headline.property_drawer['ID']
     @self_line    = top_headline
     @state        = top_headline.keyword
     @title        = top_headline.headline_text
