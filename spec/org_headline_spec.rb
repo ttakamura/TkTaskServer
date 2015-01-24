@@ -7,7 +7,7 @@ describe OrgHeadline do
   subject { top }
 
   its(:level)     { should == 0 }
-  its(:id)        { should == '0000' }
+  its(:id)        { should == nil }
 
   describe 'parse_org' do
     describe 'やること' do
