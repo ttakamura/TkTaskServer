@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe OrgClockLog do
-  let(:log)  { OrgClockLog.new text }
+  let(:log)  { OrgClockLog.parse text }
 
   subject { log }
 

@@ -71,7 +71,15 @@ def pull_changes_headline headline
   return headline unless headline.id
   return headline unless task = Task.find_by(id: headline.id)
 
-  headline.done! if task.done
+  if task.done
+    headline.done!
+  end
+
+  if task.elapsed && task.elapsed > 0
+    end_time   = Time.now
+    start_time = end_time - task.elapsed
+    headline.clock_logs << OrgClockLog.new(start_time, end_time)
+  end
 end
 
 # ------------------------ main -------------------------

@@ -125,7 +125,7 @@ class OrgHeadline
     key, value = line.to_s.split(": ").map{ |v| v.gsub(/(^\s*|\s*$)/, '') }
     case key
     when /CLOCK/
-      OrgClockLog.new value
+      OrgClockLog.parse value
     when /SCHEDULED/
       OrgSchedule.new value
     end
