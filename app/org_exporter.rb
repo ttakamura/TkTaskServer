@@ -1,4 +1,10 @@
 # coding: utf-8
+class String
+  def mb_width
+    each_char.map{|c| c.bytesize == 1 ? 1 : 2}.reduce(0, &:+)
+  end
+end
+
 class OrgExporter
   module SerializeOrgHeadline
     def to_s
@@ -11,9 +17,9 @@ class OrgExporter
 
     def tags_to_s
       return "" if tags.empty?
-      text = ":#{tags.join(':')}:"
-      sep  = " " * [(55 - title.length), 1].max
-      sep + text
+      tag_text = ":#{tags.join(':')}:"
+      padding_size = [(66 - (state_to_s.mb_width + title.mb_width + tag_text.mb_width)), 1].max
+      ' ' * padding_size + tag_text
     end
 
     def schedule_to_s
