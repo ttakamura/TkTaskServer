@@ -44,10 +44,10 @@ class Dropbox
       def put_delta handle, delta
         payload = {handle: handle, rev: delta.rev, changes: delta.changes_to_json}
 
-        puts "Sending delta... #{payload}"
+        # puts "Sending delta... #{payload}"
         res = connection.post("#{Base}/put_delta", payload)
 
-        puts res.body
+        # puts res.body
         raise res.body.to_s unless res.body['rev']
 
         {rev: res.body['rev'].to_i}
