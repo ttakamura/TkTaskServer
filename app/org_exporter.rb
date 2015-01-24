@@ -12,7 +12,7 @@ class OrgExporter
     def tags_to_s
       return "" if tags.empty?
       text = ":#{tags.join(':')}:"
-      sep  = " " * [(65 - title.length), 1].max
+      sep  = " " * [(55 - title.length), 1].max
       sep + text
     end
 

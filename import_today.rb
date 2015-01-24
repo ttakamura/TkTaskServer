@@ -56,7 +56,9 @@ def export! file_name
   org_root = OrgHeadline.parse_org_file file_name
   exporter = OrgExporter.new
 
-  pull_changes_headline org_root
+  Task.transaction do
+    pull_changes_headline org_root
+  end
 
   org_root.headlines.each do |headline|
     exporter.print_headline headline
@@ -79,6 +81,9 @@ def pull_changes_headline headline
     end_time   = Time.now
     start_time = end_time - task.elapsed
     headline.clock_logs << OrgClockLog.new(start_time, end_time)
+
+    task.elapsed = 0
+    task.save!
   end
 end
 
