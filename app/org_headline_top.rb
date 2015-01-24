@@ -8,7 +8,7 @@ class OrgHeadlineTop
   end
 
   def property_drawer
-    {'ID' => '0000'}
+    {'ID' => nil}
   end
 
   def tags
