@@ -18,7 +18,7 @@ class OrgExporter
     def tags_to_s
       return "" if tags.empty?
       tag_text = ":#{tags.join(':')}:"
-      padding_size = [(66 - (state_to_s.mb_width + title.mb_width + tag_text.mb_width)), 1].max
+      padding_size = [(73 - (state_to_s.mb_width + title.mb_width + tag_text.mb_width)), 1].max
       ' ' * padding_size + tag_text
     end
 
