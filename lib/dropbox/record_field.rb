@@ -91,7 +91,6 @@ class Dropbox
 
     private
     def parse_value fieldop
-      p fieldop
       case fieldop.first
       when 'P'
         Put.new value: super(fieldop.last)
