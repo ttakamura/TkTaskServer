@@ -26,9 +26,13 @@ class OrgHeadline
   end
 
   def initialize top_headline, headlines=[]
-    # raise "No ID!! Please set ID in properties by org-mobile-push" unless top_headline.property_drawer['ID']
+    if m = top_headline.headline_text.match(/(IDEA|TODO|DONE|NEXT|FOCUS|WAIT|SOMEDAY) /)
+      keyword = m[1]
+    else
+      keyword = top_headline.keyword
+    end
     @self_line    = top_headline
-    @state        = top_headline.keyword
+    @state        = keyword
     @title        = top_headline.headline_text.gsub(/(IDEA|TODO|DONE|NEXT|FOCUS|WAIT|SOMEDAY) /, '')
     @level        = top_headline.level
     @id           = top_headline.property_drawer['ID']
