@@ -94,8 +94,6 @@ class OrgHeadline
 
   def parse_body_lines body_lines
     body_lines.map do |body_line|
-      # puts [body_line.paragraph_type, body_line.to_s]
-
       case body_line.paragraph_type
       when :metadata
         metadata = parse_metadata_line(body_line)

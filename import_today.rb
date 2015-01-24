@@ -51,20 +51,18 @@ end
 # ----------------------- EXPORT -----------------------
 #
 def export! file_name
+  org_root = OrgHeadline.parse_org_file file_name
+  exporter = OrgExporter.new
+
   Task.db.deltas.watch do |record|
     if record.rowid && !record.data[:id] && record.tid == Task.table_id
       task     = Task.new record
       headline = task.to_org_headline
-      p headline
+      exporter.print_headline headline
     end
   end
 
   Task.sync!
-
-  raise 'hoge'
-
-  org_root = OrgHeadline.parse_org_file file_name
-  exporter = OrgExporter.new
 
   Task.transaction do
     pull_changes_headline org_root
@@ -89,7 +87,7 @@ def pull_changes_headline headline
 
   if task.elapsed && task.elapsed > 0
     # TODO: Fix clock_logs
-    start_time, end_time = elapsed_to_clock_log
+    start_time, end_time = task.elapsed_to_clock_log
 
     headline.clock_logs << OrgClockLog.new(start_time, end_time)
 
@@ -106,6 +104,7 @@ end
   on 'f', 'file=',  'Import org-file'
   on 'r', 'reset=', 'Reset all tasks before import', default: 'false'
   on 'm', 'mode=',  'Export/Import mode',            default: 'import'
+  on 'v', 'verbose=', 'Verbose mode',                default: 'false'
 end
 
 file_name = @opts[:file]
