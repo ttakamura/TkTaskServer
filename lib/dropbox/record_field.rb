@@ -17,8 +17,11 @@ class Dropbox
 
   module FieldParser
     def parse_value value
-      return value.map{|v| parse_value(v) } if value.is_a?(Array)
+      return value.map{|v| parse_atom(v) } if value.is_a?(Array)
+      parse_atom(value)
+    end
 
+    def parse_atom value
       return value unless value.is_a?(Hash)
 
       # <wrapped_int>       ::= {"I": <str>}  # decimal representation of a signed 64-bit int
@@ -88,6 +91,7 @@ class Dropbox
 
     private
     def parse_value fieldop
+      p fieldop
       case fieldop.first
       when 'P'
         Put.new value: super(fieldop.last)
