@@ -21,6 +21,8 @@ class OrgClockLog
   end
 
   def initialize start_time, end_time
+    start_time = Time.parse(start_time) if start_time.is_a?(String)
+    end_time   = Time.parse(end_time)   if end_time.is_a?(String)
     @start_time = start_time
     @end_time   = end_time
   end

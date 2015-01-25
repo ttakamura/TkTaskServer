@@ -11,29 +11,29 @@ class Task < DropbModel
   attribute :done
   attribute :date
   attribute :rec_start
+  attribute :clock_logs
 
   def done_as_text
     done ? 'DONE' : 'TODO'
   end
 
   def to_org_headline
-    # TODO: Fix clock_logs
-    start_time, end_time = elapsed_to_clock_log
-
+    clocks = org_clock_logs.map{ |l| "  CLOCK: #{l.to_s}" }.join("\n")
     top = OrgHeadline.parse_org <<-EOT
 * #{done_as_text} #{name}
   :LOGBOOK:
-  CLOCK: #{OrgClockLog.new(start_time, end_time).to_s}
+#{clocks}
   :END:
 EOT
     top.headlines.first
   end
 
-  def elapsed_to_clock_log
-    # TODO: Fix clock_logs
-    end_time   = Time.now
-    start_time = end_time - elapsed
-    [start_time, end_time]
+  def org_clock_logs
+    org_logs = []
+    clock_logs.each_slice(2) do |a, b|
+      org_logs << OrgClockLog.new(a, b)
+    end
+    org_logs
   end
 end
 
