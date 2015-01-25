@@ -85,14 +85,10 @@ def pull_changes_headline headline
     headline.done!
   end
 
-  if task.elapsed && task.elapsed > 0
-    # TODO: Fix clock_logs
-    start_time, end_time = task.elapsed_to_clock_log
-
-    headline.clock_logs << OrgClockLog.new(start_time, end_time)
-
-    task.elapsed = 0
-    task.save!
+  if headline.clock_logs.count < task.org_clock_logs.count
+    (task.org_clock_logs - headline.clock_logs).each do |log|
+      headline.clock_logs << log
+    end
   end
 end
 
