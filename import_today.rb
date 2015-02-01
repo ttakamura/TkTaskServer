@@ -99,6 +99,8 @@ def arrange! file_name
   org_root = OrgHeadline.parse_org_file file_name
   exporter = OrgExporter.new
 
+  org_root.arrange_conflict_tasks!
+
   org_root.headlines.each do |headline|
     exporter.print_headline headline
   end
