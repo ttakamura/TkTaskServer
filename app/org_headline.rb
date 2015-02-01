@@ -81,6 +81,43 @@ class OrgHeadline
     @state = 'DONE'
   end
 
+  def arrange_conflict_tasks!
+    next_free_time = nil
+    sorted_headlines.each do |sub|
+      schedule = sub.scheduled_at
+
+      if next_free_time
+        if schedule.start_time < next_free_time
+          schedule.end_time   = next_free_time + schedule.effort_sec
+          schedule.start_time = next_free_time
+        end
+      end
+
+      next_free_time = schedule.end_time
+    end
+  end
+
+  def sorted_headlines
+    list = headlines.map(&:family_tree).flatten
+
+    list = list.find_all do |sub_headline|
+      sub_headline.scheduled_at &&
+      sub_headline.scheduled_at.start_time &&
+      sub_headline.scheduled_at.end_time
+    end
+
+    list.sort_by do |sub_headline|
+      s = sub_headline.scheduled_at
+      [s.start_time, s.end_time]
+    end
+  end
+
+  def family_tree
+    [self] + headlines.map do |sub|
+      sub.family_tree
+    end
+  end
+
   private
   def parse_effort_min effort=nil
     if effort

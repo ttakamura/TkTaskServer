@@ -1,5 +1,5 @@
 class OrgSchedule
-  attr_reader :start_time, :end_time, :repeat_rule
+  attr_accessor :start_time, :end_time, :repeat_rule
 
   def initialize scheduled_text
     @text        = scheduled_text
@@ -15,6 +15,10 @@ class OrgSchedule
     e_time = "-#{ end_time.strftime('%H:%M') }"   if end_time
     repeat = " #{ repeat_rule }"                  if repeat_rule
     "<#{date}#{s_time}#{e_time}#{repeat}>"
+  end
+
+  def effort_sec
+    end_time - start_time
   end
 
   private
