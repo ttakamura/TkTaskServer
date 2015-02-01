@@ -92,6 +92,18 @@ def pull_changes_headline headline
   end
 end
 
+#
+# ----------------------- ARRANGE -----------------------
+#
+def arrange! file_name
+  org_root = OrgHeadline.parse_org_file file_name
+  exporter = OrgExporter.new
+
+  org_root.headlines.each do |headline|
+    exporter.print_headline headline
+  end
+end
+
 # ------------------------ main -------------------------
 
 @opts = Slop.parse(help: true, strict: true) do
@@ -111,4 +123,8 @@ when 'import'
   import! file_name
 when 'export'
   export! file_name
+when 'arrange'
+  arrange! file_name
+else
+  raise 'Unknown mode is given!'
 end
