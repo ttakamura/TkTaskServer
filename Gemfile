@@ -1,4 +1,4 @@
-source 'http://tokyo-m.rubygems.org/'
+source 'https://rubygems.org/'
 
 gem 'faraday'
 gem 'faraday_middleware'
