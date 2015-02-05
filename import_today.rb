@@ -46,9 +46,10 @@ def reset_tasks!
 end
 
 # ----------------------- EXPORT -----------------------
-def export! file_name
+def export! file_name, output_file_name
   org_root = OrgHeadline.parse_org_file file_name
-  exporter = OrgExporter.new
+  file     = open(output_file_name, 'w')
+  exporter = OrgExporter.new file
 
   Task.db.deltas.watch do |record|
     if record.rowid && !record.data[:id] && record.tid == Task.table_id
@@ -90,23 +91,29 @@ def pull_changes_headline headline
 end
 
 # ----------------------- ARRANGE -----------------------
-def arrange! file_name
+def arrange! file_name, output_file_name
   org_root = OrgHeadline.parse_org_file file_name
-  exporter = OrgExporter.new
+  file     = open(output_file_name, 'w')
+  exporter = OrgExporter.new file
 
   org_root.arrange_conflict_tasks!
 
   org_root.headlines.each do |headline|
     exporter.print_headline headline
   end
+ensure
+  file.close
 end
 
 # ------------------------ Logs to Ical------------------
-def export_logs! file_name
+def export_logs! file_name, output_file_name
   org_root = OrgHeadline.parse_org_file file_name
   calendar = IcalExporter.new org_root
   calendar.add_all_clock_logs
-  puts calendar.to_s
+
+  open(output_file_name, 'w') do |f|
+    f.write calendar.to_s
+  end
 end
 
 # ------------------------ main -------------------------
@@ -114,6 +121,7 @@ end
   banner 'Usage: import_today.rb [options]'
 
   on 'f', 'file=',  'Import org-file'
+  on 'o', 'output=', 'Output file'
   on 'r', 'reset=', 'Reset all tasks before import', default: 'false'
   on 'm', 'mode=',  'Export/Import mode',            default: 'import'
   on 'v', 'verbose=', 'Verbose mode',                default: 'false'
@@ -122,15 +130,17 @@ end
 file_name = @opts[:file]
 raise "Please input the file_name" unless file_name
 
+output_file_name = @opts[:output]
+
 case @opts[:mode]
 when 'import'
   import! file_name
 when 'export'
-  export! file_name
+  export! file_name, output_file_name
 when 'export_logs'
-  export_logs! file_name
+  export_logs! file_name, output_file_name
 when 'arrange'
-  arrange! file_name
+  arrange! file_name, output_file_name
 else
   raise 'Unknown mode is given!'
 end

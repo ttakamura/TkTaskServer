@@ -60,7 +60,8 @@ class OrgExporter
 
   EMACS_DATE_FORMAT = "%Y-%m-%d %a %H:%M"
 
-  def initialize
+  def initialize io=STDOUT
+    @io = io
   end
 
   def print_headline headline
@@ -82,6 +83,6 @@ class OrgExporter
   end
 
   def print_line line, level=1
-    puts "#{ ' ' * level }#{ line }"
+    io.puts "#{ ' ' * level }#{ line }"
   end
 end
