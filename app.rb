@@ -2,7 +2,9 @@ require 'ostruct'
 require 'pry'
 require 'hirb-unicode'
 require 'org-ruby'
+require 'tzinfo'
 require 'icalendar'
+require 'icalendar/tzinfo'
 Hirb.disable
 
 ENV['TZ'] = 'Asia/Tokyo'

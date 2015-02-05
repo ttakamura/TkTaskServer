@@ -9,6 +9,7 @@ gem 'settingslogic'
 gem 'hirb-unicode'
 gem 'org-ruby'
 gem 'icalendar'
+gem 'tzinfo'
 
 group :development do
   gem 'pry'

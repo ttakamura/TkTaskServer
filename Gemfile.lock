@@ -90,6 +90,8 @@ GEM
     timecop (0.7.1)
     timers (4.0.1)
       hitimes
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     unicode-display_width (0.1.1)
     vcr (2.9.3)
     virtus (1.0.3)
@@ -125,6 +127,7 @@ DEPENDENCIES
   ruby_gntp
   settingslogic
   timecop
+  tzinfo
   vcr
   virtus
   webmock
