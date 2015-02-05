@@ -94,7 +94,7 @@ class OrgHeadline
   end
 
   def sorted_headlines
-    list = headlines.map(&:family_tree).flatten
+    list = all_sub_headlines
 
     list = list.find_all do |sub_headline|
       sub_headline.scheduled_at &&
@@ -112,6 +112,10 @@ class OrgHeadline
     [self] + headlines.map do |sub|
       sub.family_tree
     end
+  end
+
+  def all_sub_headlines
+    headlines.map(&:family_tree).flatten
   end
 
   private

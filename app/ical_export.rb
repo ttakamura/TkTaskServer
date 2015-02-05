@@ -1,10 +1,10 @@
 class IcalExporter
   def initialize top_org_headline
-    @headlines = top_org_headline.headlines
+    @top_headline = top_org_headline
   end
 
   def add_all_clock_logs
-    @headlines.each do |sub|
+    @top_headline.all_sub_headlines.each do |sub|
       add_clock_logs sub
     end
   end
