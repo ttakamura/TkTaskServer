@@ -83,6 +83,6 @@ class OrgExporter
   end
 
   def print_line line, level=1
-    io.puts "#{ ' ' * level }#{ line }"
+    @io.puts "#{ ' ' * level }#{ line }"
   end
 end
