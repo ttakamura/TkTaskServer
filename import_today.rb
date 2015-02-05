@@ -83,7 +83,9 @@ def pull_changes_headline headline
 
   if headline.clock_logs.count < task.org_clock_logs.count
     logs = task.org_clock_logs.reverse
-    headline.clock_logs = logs | headline.clock_logs
+    (logs - headline.clock_logs).each do |log|
+      headline.clock_logs << log
+    end
   end
 end
 
