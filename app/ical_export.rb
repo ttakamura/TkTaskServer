@@ -3,6 +3,12 @@ class IcalExporter
     @headlines = top_org_headline.headlines
   end
 
+  def add_all_clock_logs
+    @headlines.each do |sub|
+      add_clock_logs sub
+    end
+  end
+
   def add_clock_logs headline
     headline.clock_logs.each do |log|
       e = Icalendar::Event.new

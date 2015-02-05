@@ -5,9 +5,7 @@ def local_db
   Task.db
 end
 
-#
 # ---------------------- IMPORT --------------------------
-#
 def import! file_name
   Task.sync!
 
@@ -47,9 +45,7 @@ def reset_tasks!
   end
 end
 
-#
 # ----------------------- EXPORT -----------------------
-#
 def export! file_name
   org_root = OrgHeadline.parse_org_file file_name
   exporter = OrgExporter.new
@@ -92,9 +88,7 @@ def pull_changes_headline headline
   end
 end
 
-#
 # ----------------------- ARRANGE -----------------------
-#
 def arrange! file_name
   org_root = OrgHeadline.parse_org_file file_name
   exporter = OrgExporter.new
@@ -106,8 +100,15 @@ def arrange! file_name
   end
 end
 
-# ------------------------ main -------------------------
+# ------------------------ Logs to Ical------------------
+def export_logs! file_name
+  org_root = OrgHeadline.parse_org_file file_name
+  calendar = IcalExporter.new org_root
+  calendar.add_all_clock_logs
+  puts calendar.to_s
+end
 
+# ------------------------ main -------------------------
 @opts = Slop.parse(help: true, strict: true) do
   banner 'Usage: import_today.rb [options]'
 
@@ -125,6 +126,8 @@ when 'import'
   import! file_name
 when 'export'
   export! file_name
+when 'export_logs'
+  export_logs! file_name
 when 'arrange'
   arrange! file_name
 else
