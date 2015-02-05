@@ -43,4 +43,12 @@ class OrgClockLog
     min  = (span/60).to_i  % 60
     sprintf("%s:%02d", hour, min)
   end
+
+  def to_a
+    if start_time && end_time
+      [start_time, end_time]
+    else
+      nil
+    end
+  end
 end

@@ -8,6 +8,7 @@ gem 'leveldb-ruby'
 gem 'settingslogic'
 gem 'hirb-unicode'
 gem 'org-ruby'
+gem 'icalendar'
 
 group :development do
   gem 'pry'

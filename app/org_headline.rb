@@ -62,11 +62,7 @@ class OrgHeadline
       :state          => state || 'NONE'
     }
 
-    task[:clock_logs] = clock_logs.map do |log|
-      if log.start_time && log.end_time
-        [log.start_time, log.end_time]
-      end
-    end.compact.flatten
+    task[:clock_logs] = clock_logs.reverse.map(&:to_a).compact.flatten
 
     if scheduled_at && scheduled_at.start_time
       task[:section]        = (scheduled_at.start_time.hour / 4).to_i
